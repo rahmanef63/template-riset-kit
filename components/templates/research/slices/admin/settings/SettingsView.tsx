@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SectionHead } from "@/components/templates/_shared/ui/section-head";
+import { UpdateCard } from "@/components/admin/update-card";
+import { BackupCard } from "@/components/admin/backup-card";
 import { DEFAULT_SITE_CONFIG } from "../../../shared/site-config";
 
 export function SettingsView() {
@@ -45,6 +47,11 @@ export function SettingsView() {
           </p>
         </CardContent>
       </Card>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <UpdateCard />
+        <BackupCard />
+      </div>
     </div>
   );
 }
