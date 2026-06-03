@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { SEED_INSIGHTS } from "../../shared/insights-seed";
 import { PUBLIC_BASE } from "../../shared/nav-config";
+import { CommentsSection } from "../../shared/comments-section";
 import { fmtDate } from "../../shared/store";
 import type { Insight } from "../../shared/types";
 
@@ -102,6 +103,8 @@ export function InsightsDetailPage({ slug }: { slug: string }) {
           </div>
         </section>
       )}
+
+      <CommentsSection kind="insights" slug={insight.slug} title="Diskusi" />
     </article>
   );
 }

@@ -1,12 +1,14 @@
 import { authTables } from "@convex-dev/auth/server";
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { commentsTables } from "./features/comments/_schema";
 
 // Riset Kit OS — full schema (Convex target).
 // authTables = @convex-dev/auth. Content tables mirror the localStorage shape
 // the frontend store used, so the Convex-backed store adapter maps 1:1.
 export default defineSchema({
   ...authTables,
+  ...commentsTables,
 
   risetDocuments: defineTable({
     title: v.string(),
@@ -23,6 +25,8 @@ export default defineSchema({
     uploadedAt: v.number(),
     pages: v.number(),
     highlights: v.number(),
+    icon: v.optional(v.string()),
+    coverImage: v.optional(v.string()),
   })
     .index("by_status", ["status"])
     .index("by_uploadedAt", ["uploadedAt"]),
@@ -62,6 +66,7 @@ export default defineSchema({
       }),
     ),
     updatedAt: v.number(),
+    icon: v.optional(v.string()),
   }).index("by_updatedAt", ["updatedAt"]),
 
   risetAiSessions: defineTable({

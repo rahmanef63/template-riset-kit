@@ -24,6 +24,7 @@ export const upsert = mutation({
     docIds: v.array(v.string()),
     matrix: MATRIX,
     updatedAt: v.number(),
+    icon: v.optional(v.string()),
   },
   handler: async (ctx, { id, ...data }) => {
     if (id) {

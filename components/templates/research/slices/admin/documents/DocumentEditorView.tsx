@@ -17,6 +17,8 @@ const META: EntityMeta = {
 
 export const FIELDS: FieldDef<Document>[] = [
   { kind: "text", key: "title", label: "Judul" },
+  { kind: "icon", key: "icon", label: "Ikon", hint: "Emoji / Lucide / Phosphor — tampil di daftar & detail." },
+  { kind: "imagePicker", key: "coverImage", label: "Cover", wide: true },
   { kind: "text", key: "authors", label: "Penulis" },
   { kind: "number", key: "year", label: "Tahun", min: 1900, max: 2100 },
   { kind: "text", key: "tag", label: "Tag" },

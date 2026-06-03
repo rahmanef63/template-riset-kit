@@ -16,6 +16,7 @@ import { useLitReviewController } from "./LitReviewView";
  *  use deep-link page below for matrix editing). */
 export const FIELDS: FieldDef<LitReview>[] = [
   { kind: "text", key: "topic", label: "Topik" },
+  { kind: "icon", key: "icon", label: "Ikon", hint: "Emoji / Lucide / Phosphor." },
   { kind: "tags", key: "docIds", label: "Document IDs", hint: "Edit matrix di halaman deep-link." },
   { kind: "textarea", key: "question", label: "Pertanyaan riset", rows: 3 },
 ];

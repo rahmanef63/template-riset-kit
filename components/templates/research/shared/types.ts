@@ -14,6 +14,8 @@ export type Document = {
   uploadedAt: number;
   pages: number;
   highlights: number;
+  icon?: string;
+  coverImage?: string;
 };
 
 export type Note = {
@@ -43,6 +45,7 @@ export type LitReview = {
   docIds: string[];
   matrix: { docId: string; method: string; finding: string; gap: string }[];
   updatedAt: number;
+  icon?: string;
 };
 
 export type AiReaderSession = {

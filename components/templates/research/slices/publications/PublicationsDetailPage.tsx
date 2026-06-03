@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { SEED_PUBLICATIONS } from "../../shared/publications-seed";
 import { PUBLIC_BASE } from "../../shared/nav-config";
+import { CommentsSection } from "../../shared/comments-section";
 
 function bibtexFor(slug: string) {
   const p = SEED_PUBLICATIONS.find((x) => x.slug === slug);
@@ -115,6 +116,8 @@ export function PublicationsDetailPage({ slug }: { slug: string }) {
           </CardContent>
         </Card>
       </section>
+
+      <CommentsSection kind="publications" slug={pub.slug} title="Diskusi" />
     </article>
   );
 }
