@@ -9,8 +9,26 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: { default: "riset-kit", template: "%s — riset-kit" },
-  description: "Built with rahman-resources kitab.",
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ??
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"),
+  ),
+  title: { default: "Riset Kit", template: "%s — Riset Kit" },
+  description:
+    "Workspace OS for researchers, academics & knowledge builders — publications + insights, research notes, knowledge dashboard. Free, clone-to-own.",
+  openGraph: {
+    title: "Riset Kit",
+    description:
+      "Workspace OS for researchers, academics & knowledge builders — publications + insights, research notes, knowledge dashboard. Free, clone-to-own.",
+    type: "website",
+    siteName: "Riset Kit",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Riset Kit",
+    description:
+      "Workspace OS for researchers, academics & knowledge builders — publications + insights, research notes, knowledge dashboard. Free, clone-to-own.",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
