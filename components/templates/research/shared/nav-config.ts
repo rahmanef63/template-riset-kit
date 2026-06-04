@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   LayoutTemplate,
   Library,
+  NotebookPen,
   Newspaper,
   Quote,
   Settings,
@@ -95,6 +96,8 @@ export function buildAdminPrimaryNav(state: State): AdminNavItem[] {
     { id: "ai-reader",    label: "AI Reader",    href: `${ADMIN_BASE}/ai-reader`,    icon: Bot,          count: null },
     { id: "lit-review",   label: "Lit Review",   href: `${ADMIN_BASE}/lit-review`,   icon: Library,      count: state.litReviews.length },
     { id: "collaborators",label: "Collaborators",href: `${ADMIN_BASE}/collaborators`,icon: Users,        count: state.collaborators.length },
+    { id: "notion-notes", label: "Notion",       href: `${ADMIN_BASE}/notion-notes`, icon: NotebookPen,  count: null },
+    { id: "database",     label: "Database",     href: `${ADMIN_BASE}/database`,      icon: Database,     count: null },
   ];
 }
 
