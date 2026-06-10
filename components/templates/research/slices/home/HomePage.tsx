@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 import {
   useDocuments,
   useLandingSections,
@@ -20,10 +22,19 @@ export function HomePage() {
   const documents = useDocuments();
   const litReviews = useLitReviews();
 
+  const subscribe = useMutation(api.subscribers.subscribe);
+  const onSubscribe = React.useCallback(
+    async (email: string) => {
+      await subscribe({ email, source: "landing" });
+      return { ok: true as const };
+    },
+    [subscribe],
+  );
+
   const ordered = React.useMemo(
     () => [...sections].filter((s) => s.enabled).sort((a, b) => a.order - b.order),
     [sections],
   );
 
-  return <>{ordered.map((s) => renderLanding(s, { documents, litReviews }))}</>;
+  return <>{ordered.map((s) => renderLanding(s, { documents, litReviews, onSubscribe }))}</>;
 }

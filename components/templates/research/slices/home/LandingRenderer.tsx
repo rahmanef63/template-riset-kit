@@ -36,6 +36,7 @@ import {
 interface Deps {
   documents: Document[];
   litReviews: LitReview[];
+  onSubscribe?: (email: string) => Promise<{ ok: boolean; notice?: string }>;
 }
 
 const FEATURE_ITEMS: FeatureItem[] = [
@@ -176,6 +177,7 @@ export function renderLanding(section: LandingSection, deps: Deps) {
             placeholder="Email kamu"
             buttonLabel="Berlangganan"
             successText="Terima kasih — ringkasan pertama menyusul."
+            onSubscribe={deps.onSubscribe}
           />
         </LandingSectionShell>
       );
