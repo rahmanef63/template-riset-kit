@@ -1,20 +1,37 @@
 "use client";
 
-import { BookOpen, Bot, FileText, Library, Quote } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Bot, FileText, Library, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   HeroBlock,
   SectionHead,
   FeatureGrid,
+  CtaBand,
   type FeatureItem,
 } from "@/components/templates/_shared";
 import { LandingSectionShell } from "@/components/templates/_shared/landing/LandingSectionShell";
-import { CountUp, Stagger } from "@/components/templates/_shared/motion";
+import { Stagger } from "@/components/templates/_shared/motion";
 import { parseConfigBadge } from "@/components/templates/_shared/landing/parse-config";
+import {
+  CustomSection,
+  FaqSection,
+  NewsletterSection,
+  PricingSection,
+  StatsSection,
+  TestimonialsSection,
+} from "@/components/templates/_shared/landing/sections";
 import type { LandingSection } from "@/components/templates/_shared/landing/types";
 import { ADMIN_BASE, PUBLIC_BASE } from "../../shared/nav-config";
 import type { Document, LitReview } from "../../shared/types";
+import {
+  LibraryTeaser,
+  PublicationsTeaser,
+  RESEARCH_CLIENTS,
+  RESEARCH_FAQS,
+  RESEARCH_STATS,
+  RESEARCH_TESTIMONIALS,
+  RESEARCH_TIERS,
+} from "./LandingExtras";
 
 interface Deps {
   documents: Document[];
@@ -28,17 +45,11 @@ const FEATURE_ITEMS: FeatureItem[] = [
   { icon: Quote, title: "Citation Manager", blurb: "APA, MLA, Chicago, IEEE, BibTeX. Auto-extract metadata dari PDF." },
 ];
 
-const STATS: { num?: number; suffix?: string; text?: string; label: string }[] = [
-  { num: 10, suffix: "+", label: "Format dokumen" },
-  { num: 5, label: "Citation styles" },
-  { text: "EYD", label: "Mode akademik ID" },
-  { num: 100, suffix: "%", label: "Privasi lokal" },
-];
-
 /**
  * Maps each enabled landingSection.kind to its research renderer.
- * Admin-editable title/subtitle thread through; unknown kinds render a
- * minimal stub so admin still sees them without crashing the page.
+ * Admin-editable title/subtitle thread through; section.config JSON
+ * overrides every default (stats/faq/tiers/testimonials — see
+ * _shared/landing/sections/config.ts). Defaults live in LandingExtras.
  */
 export function renderLanding(section: LandingSection, deps: Deps) {
   switch (section.kind) {
@@ -59,24 +70,8 @@ export function renderLanding(section: LandingSection, deps: Deps) {
 
     case "stats":
       return (
-        <LandingSectionShell section={section} defaultClassName="border-y border-border/50 bg-muted/20">
-          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-4 py-8 sm:px-6 sm:py-10 md:grid-cols-4">
-            <Stagger step={60}>
-              {STATS.map((s) => (
-                <div key={s.label}>
-                  <p className="text-2xl font-semibold tracking-tight sm:text-3xl">
-                    {s.text ?? (
-                      <>
-                        <CountUp value={s.num ?? 0} />
-                        {s.suffix}
-                      </>
-                    )}
-                  </p>
-                  <p className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">{s.label}</p>
-                </div>
-              ))}
-            </Stagger>
-          </div>
+        <LandingSectionShell section={section} defaultClassName="border-y border-border/50 bg-muted/10">
+          <StatsSection section={section} stats={RESEARCH_STATS} clients={RESEARCH_CLIENTS} />
         </LandingSectionShell>
       );
 
@@ -89,38 +84,6 @@ export function renderLanding(section: LandingSection, deps: Deps) {
             subtitle={section.subtitle}
           />
           <FeatureGrid items={FEATURE_ITEMS} columns={4} className="mt-10" />
-        </LandingSectionShell>
-      );
-
-    case "blog":
-      return (
-        <LandingSectionShell section={section} defaultClassName="border-y border-border/50 bg-muted/10">
-          <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
-            <SectionHead
-              eyebrow="Library"
-              title={section.title}
-              subtitle={section.subtitle}
-              cta={{ label: "Buka library", href: `${PUBLIC_BASE}/library` }}
-            />
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <Stagger itemClassName="h-full">
-                {deps.documents.slice(0, 3).map((d) => (
-                  <Card key={d.id} className="h-full border-border/60 bg-card/60 transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg">
-                    <CardContent className="space-y-2 p-5">
-                      <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-                        <BookOpen className="size-3" />
-                        <span>{d.year}</span>
-                        <Badge variant="outline" className="rounded-full text-[10px]">{d.tag}</Badge>
-                      </div>
-                      <h3 className="text-sm font-medium leading-snug">{d.title}</h3>
-                      <p className="text-xs text-muted-foreground">{d.authors}</p>
-                      <p className="line-clamp-3 text-xs text-foreground/70">{d.abstract}</p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </Stagger>
-            </div>
-          </div>
         </LandingSectionShell>
       );
 
@@ -149,28 +112,78 @@ export function renderLanding(section: LandingSection, deps: Deps) {
         </LandingSectionShell>
       );
 
-    case "pricing":
-    case "changelog":
     case "services":
+      return (
+        <LandingSectionShell section={section} defaultClassName="border-y border-border/50 bg-muted/10">
+          <LibraryTeaser section={section} documents={deps.documents} />
+        </LandingSectionShell>
+      );
+
+    case "blog":
+    case "changelog":
+      return (
+        <LandingSectionShell section={section} defaultClassName="border-t border-border/50">
+          <PublicationsTeaser section={section} />
+        </LandingSectionShell>
+      );
+
     case "testimonials":
+      return (
+        <LandingSectionShell section={section}>
+          <TestimonialsSection
+            section={section}
+            eyebrow="Kolaborator"
+            items={RESEARCH_TESTIMONIALS}
+          />
+        </LandingSectionShell>
+      );
+
     case "faq":
-    case "newsletter":
+      return (
+        <LandingSectionShell section={section}>
+          <FaqSection
+            section={section}
+            items={RESEARCH_FAQS}
+            ctaLabel="Hubungi tim riset"
+            ctaHref={`${PUBLIC_BASE}/about`}
+          />
+        </LandingSectionShell>
+      );
+
+    case "pricing":
+      return (
+        <LandingSectionShell section={section} defaultClassName="border-y border-border/50 bg-muted/10">
+          <PricingSection section={section} tiers={RESEARCH_TIERS} featuredBadge="Paling diminati" />
+        </LandingSectionShell>
+      );
+
     case "cta":
+      return (
+        <LandingSectionShell section={section}>
+          <CtaBand
+            title={section.title}
+            subtitle={section.subtitle ?? "Mulai dari upload PDF pertamamu."}
+            cta={{ label: "Buka workspace", href: ADMIN_BASE }}
+          />
+        </LandingSectionShell>
+      );
+
+    case "newsletter":
+      return (
+        <LandingSectionShell section={section}>
+          <NewsletterSection
+            section={section}
+            placeholder="Email kamu"
+            buttonLabel="Berlangganan"
+            successText="Terima kasih — ringkasan pertama menyusul."
+          />
+        </LandingSectionShell>
+      );
+
     case "custom":
       return (
-        <LandingSectionShell
-          section={section}
-          defaultClassName="border-b border-border/40 bg-muted/10 py-12"
-        >
-          <div className="mx-auto max-w-3xl px-6 text-center">
-            <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">
-              {section.kind}
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight">{section.title}</h2>
-            {section.subtitle ? (
-              <p className="mt-3 text-sm text-muted-foreground">{section.subtitle}</p>
-            ) : null}
-          </div>
+        <LandingSectionShell section={section}>
+          <CustomSection section={section} />
         </LandingSectionShell>
       );
 
@@ -178,4 +191,3 @@ export function renderLanding(section: LandingSection, deps: Deps) {
       return null;
   }
 }
-

@@ -73,12 +73,21 @@ const COLLABORATORS = [
   { name: "Budi Hartono", affiliation: "Riset Kit — Operations", role: "RA" as const, orcid: "0000-0006-7890-1234", email: "budi@example.org", expertise: ["data cleaning", "survey administration", "R / tidyverse"], projectIds: ["proj-4"], initials: "BH" },
 ];
 
+// Keep in sync with components/templates/research/shared/landing-seed.ts
+// SEED_LANDING_SECTIONS. `syncLanding` below pushes additions/order to an
+// already-seeded deployment without touching admin-edited copy.
 const LANDING = [
   { id: "ls-hero", order: 10, kind: "hero", title: "Riset workspace yang paham bahasa akademik Indonesia.", subtitle: "Baca PDF, review literatur, dan draft tesis — semua dalam satu workspace dengan AI yang ngerti EYD dan metodologi riset.", enabled: true, config: '{"badge":"Untuk peneliti, mahasiswa S2/S3, think-tank"}' },
-  { id: "ls-stats", order: 20, kind: "stats", title: "Spesifikasi singkat", subtitle: "Format, citation styles, dan privasi.", enabled: true },
+  { id: "ls-stats", order: 20, kind: "stats", title: "Jejak riset yang bisa diverifikasi", subtitle: "Publikasi, sitasi, dataset terbuka, dan kolaborator — angka berjalan dari workspace ini.", enabled: true },
   { id: "ls-features", order: 30, kind: "features", title: "Semua yang dibutuhkan dalam siklus riset", subtitle: "Dari upload paper sampai draft bab — satu workspace, AI di setiap titik.", enabled: true },
-  { id: "ls-blog", order: 40, kind: "blog", title: "Paper terbaru", subtitle: "Sebagian dari knowledge-base yang sudah diindeks.", enabled: true },
-  { id: "ls-portfolio", order: 50, kind: "portfolio", title: "Sintesis literatur jadi mudah", subtitle: "Matrix bandingkan metode, temuan, dan gap antar paper otomatis.", enabled: true },
+  { id: "ls-portfolio", order: 40, kind: "portfolio", title: "Sintesis literatur jadi mudah", subtitle: "Matrix bandingkan metode, temuan, dan gap antar paper otomatis.", enabled: true },
+  { id: "ls-library", order: 50, kind: "services", title: "Knowledge-base yang terus tumbuh", subtitle: "Paper terbaru yang sudah diindeks dan siap ditanyai lewat AI Reader.", enabled: true },
+  { id: "ls-blog", order: 60, kind: "blog", title: "Publikasi terbaru", subtitle: "Paper, preprint, dan laporan yang sudah dirilis — lengkap dengan DOI dan sitasi siap salin.", enabled: true },
+  { id: "ls-testimonials", order: 70, kind: "testimonials", title: "Kata kolaborator dan peneliti", subtitle: "Pengalaman mereka yang meriset bareng lewat workspace ini.", enabled: true },
+  { id: "ls-faq", order: 80, kind: "faq", title: "Pertanyaan yang sering masuk", subtitle: "Soal akses dataset, sitasi, lisensi, dan kolaborasi riset.", enabled: true },
+  { id: "ls-pricing", order: 90, kind: "pricing", title: "Paket akses & kolaborasi", subtitle: "Dari akses terbuka untuk pembaca sampai kemitraan riset institusi.", enabled: false },
+  { id: "ls-cta", order: 100, kind: "cta", title: "Siap rapikan alur risetmu?", subtitle: "Mulai dari upload PDF pertama — workspace siap dalam 5 menit.", enabled: true },
+  { id: "ls-newsletter", order: 110, kind: "newsletter", title: "Ringkasan riset bulanan", subtitle: "Publikasi baru, dataset terbuka, dan catatan metodologi — sebulan sekali, tanpa spam.", enabled: true },
 ];
 
 const PAGES = [
@@ -150,6 +159,33 @@ export const run = mutation({
       for (const row of await ctx.db.query(t).take(1000)) await ctx.db.delete(row._id);
     }
     return insertAll(ctx);
+  },
+});
+
+// Additive landing sync for already-seeded deployments: inserts LANDING
+// entries whose sectionId is missing and aligns `order` to the canonical
+// lineup. Never touches admin-edited copy/enabled/config on existing rows.
+export const syncLanding = mutation({
+  args: {},
+  handler: async (ctx) => {
+    let inserted = 0;
+    let reordered = 0;
+    for (const s of LANDING) {
+      const existing = await ctx.db
+        .query("landingSections")
+        .withIndex("by_sectionId", (q) => q.eq("sectionId", s.id))
+        .unique();
+      if (!existing) {
+        await ctx.db.insert("landingSections", { sectionId: s.id, data: s });
+        inserted++;
+      } else if ((existing.data as { order?: number }).order !== s.order) {
+        await ctx.db.patch(existing._id, {
+          data: { ...(existing.data as Record<string, unknown>), order: s.order },
+        });
+        reordered++;
+      }
+    }
+    return { inserted, reordered };
   },
 });
 
