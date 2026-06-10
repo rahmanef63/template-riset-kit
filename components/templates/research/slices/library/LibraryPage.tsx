@@ -50,7 +50,21 @@ export function LibraryPage() {
         )}
         <Stagger itemClassName="h-full" step={50} cap={300}>
           {filtered.map((d) => (
-            <Card key={d.id} className="h-full border-border/60 bg-card/60 transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg">
+            <Card key={d.id} className="h-full overflow-hidden border-border/60 bg-card/60 transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg">
+              {d.coverImage && (
+                <div className="relative aspect-[5/3] w-full overflow-hidden rounded-t-[inherit]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={d.coverImage}
+                    alt={d.title}
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                </div>
+              )}
               <CardContent className="space-y-2 p-5">
                 <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
                   <BookOpen className="size-3" />

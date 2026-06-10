@@ -14,8 +14,8 @@ const now = 1_780_000_000_000;
 const day = (n: number) => now - n * 24 * 60 * 60 * 1000;
 
 const DOCUMENTS = [
-  { title: "Lorem ipsum: A meta-analysis of cognitive load patterns", authors: "Pratama A., Sari R., Wijaya B.", year: 2024, fileLabel: "PDF · 24 hal", abstract: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Studi meta-analisis terhadap 42 paper menunjukkan pola beban kognitif konsisten lintas demografi.", tag: "cognitive-science", status: "indexed" as const, uploadedAt: day(2), pages: 24, highlights: 12 },
-  { title: "Ipsum doloremque: Riset etnografi UMKM Indonesia", authors: "Hartono L., Setiawan B.", year: 2023, fileLabel: "PDF · 38 hal", abstract: "Etnografi 6-bulan di 12 UMKM kuliner Bandung. Temuan: adopsi digital terhambat oleh literasi finansial, bukan akses teknologi.", tag: "ethnography", status: "reviewed" as const, uploadedAt: day(8), pages: 38, highlights: 27 },
+  { title: "Lorem ipsum: A meta-analysis of cognitive load patterns", authors: "Pratama A., Sari R., Wijaya B.", year: 2024, fileLabel: "PDF · 24 hal", abstract: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Studi meta-analisis terhadap 42 paper menunjukkan pola beban kognitif konsisten lintas demografi.", tag: "cognitive-science", status: "indexed" as const, uploadedAt: day(2), pages: 24, highlights: 12, coverImage: "https://picsum.photos/seed/riset-doc-cognitive/800/600" },
+  { title: "Ipsum doloremque: Riset etnografi UMKM Indonesia", authors: "Hartono L., Setiawan B.", year: 2023, fileLabel: "PDF · 38 hal", abstract: "Etnografi 6-bulan di 12 UMKM kuliner Bandung. Temuan: adopsi digital terhambat oleh literasi finansial, bukan akses teknologi.", tag: "ethnography", status: "reviewed" as const, uploadedAt: day(8), pages: 38, highlights: 27, coverImage: "https://picsum.photos/seed/riset-doc-umkm/800/600" },
   { title: "Sit amet: Tinjauan kebijakan transportasi publik Jakarta", authors: "Maharani P., Wijaya A.", year: 2025, fileLabel: "PDF · 16 hal", abstract: "Analisis dampak ERP terhadap kongesti dan emisi. Data 2018-2024 menunjukkan korelasi negatif lemah pada koridor utama.", tag: "policy", status: "uploaded" as const, uploadedAt: day(1), pages: 16, highlights: 0 },
 ];
 
@@ -186,6 +186,30 @@ export const syncLanding = mutation({
       }
     }
     return { inserted, reordered };
+  },
+});
+
+// Additive cover-image backfill for already-seeded deployments: for each seed
+// document that carries a `coverImage`, find the matching live row by its unique
+// `title` and patch `coverImage` ONLY when the row is still missing one. Never
+// overwrites an admin-set cover. Safe to re-run (idempotent).
+export const syncDocumentImages = mutation({
+  args: {},
+  handler: async (ctx) => {
+    let patched = 0;
+    const wanted = DOCUMENTS.filter(
+      (d): d is typeof d & { coverImage: string } => "coverImage" in d,
+    );
+    if (wanted.length === 0) return { patched };
+    const rows = await ctx.db.query("risetDocuments").collect();
+    for (const seed of wanted) {
+      const row = rows.find((r) => r.title === seed.title);
+      if (row && !row.coverImage) {
+        await ctx.db.patch(row._id, { coverImage: seed.coverImage });
+        patched++;
+      }
+    }
+    return { patched };
   },
 });
 
