@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Reveal, Stagger } from "@/components/templates/_shared/motion";
 import { ADMIN_BASE } from "../../shared/nav-config";
 
 const PRINCIPLES = [
@@ -24,44 +25,55 @@ const TIMELINE = [
 export function AboutPage() {
   return (
     <section className="mx-auto max-w-5xl px-6 py-16">
-      <header>
-        <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">Tentang</p>
-        <h1 className="mt-2 text-4xl font-semibold tracking-tight md:text-5xl">
-          Workspace riset yang dirancang dari konteks Indonesia.
-        </h1>
-        <p className="mt-4 max-w-3xl text-muted-foreground">
-          Riset Kit dibangun karena tools riset global tidak selalu cocok dengan workflow akademik Indonesia.
-          Bahasa, metodologi, format sitasi — semua kami sesuaikan ulang.
-        </p>
-        <Button asChild className="mt-6">
-          <Link href={ADMIN_BASE}>Coba workspace <ArrowRight className="size-4" /></Link>
-        </Button>
-      </header>
+      <Reveal>
+        <header>
+          <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">Tentang</p>
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight md:text-5xl">
+            Workspace riset yang dirancang dari konteks Indonesia.
+          </h1>
+          <p className="mt-4 max-w-3xl text-muted-foreground">
+            Riset Kit dibangun karena tools riset global tidak selalu cocok dengan workflow akademik Indonesia.
+            Bahasa, metodologi, format sitasi — semua kami sesuaikan ulang.
+          </p>
+          <Button asChild className="mt-6">
+            <Link href={ADMIN_BASE}>Coba workspace <ArrowRight className="size-4" /></Link>
+          </Button>
+        </header>
+      </Reveal>
 
       <section className="mt-16">
-        <h2 className="text-2xl font-semibold tracking-tight">Prinsip</h2>
+        <Reveal>
+          <h2 className="text-2xl font-semibold tracking-tight">Prinsip</h2>
+        </Reveal>
         <div className="mt-6 grid gap-3 md:grid-cols-2">
-          {PRINCIPLES.map((p) => (
-            <Card key={p} className="border-border/60 bg-card/60">
-              <CardContent className="flex items-start gap-3 p-4 text-sm">
-                <CheckCircle2 className="mt-0.5 size-4 text-foreground/70" />
-                <span className="text-foreground/85">{p}</span>
-              </CardContent>
-            </Card>
-          ))}
+          <Stagger itemClassName="h-full" step={60} cap={300}>
+            {PRINCIPLES.map((p) => (
+              <Card key={p} className="h-full border-border/60 bg-card/60 transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <CardContent className="flex items-start gap-3 p-4 text-sm">
+                  <CheckCircle2 className="mt-0.5 size-4 text-foreground/70" />
+                  <span className="text-foreground/85">{p}</span>
+                </CardContent>
+              </Card>
+            ))}
+          </Stagger>
         </div>
       </section>
 
       <section className="mt-16">
-        <h2 className="text-2xl font-semibold tracking-tight">Timeline</h2>
+        <Reveal>
+          <h2 className="text-2xl font-semibold tracking-tight">Timeline</h2>
+        </Reveal>
         <ol className="mt-6 space-y-3 border-l border-border/60 pl-6">
-          {TIMELINE.map((t) => (
+          {TIMELINE.map((t, idx) => (
             <li key={t.year} className="relative">
               <span className="absolute -left-[29px] top-1.5 grid size-3 place-items-center rounded-full border border-border bg-background">
                 <span className="size-1 rounded-full bg-foreground" />
               </span>
-              <p className="text-xs font-mono text-muted-foreground">{t.year}</p>
-              <p className="text-sm text-foreground/85">{t.milestone}</p>
+              {/* Reveal inside the <li> — Stagger's div children would be invalid <ol> markup. */}
+              <Reveal delay={Math.min(idx * 60, 360)}>
+                <p className="text-xs font-mono text-muted-foreground">{t.year}</p>
+                <p className="text-sm text-foreground/85">{t.milestone}</p>
+              </Reveal>
             </li>
           ))}
         </ol>

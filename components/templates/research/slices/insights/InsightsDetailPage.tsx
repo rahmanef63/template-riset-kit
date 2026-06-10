@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, Clock, Lightbulb } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Stagger } from "@/components/templates/_shared/motion";
 import { SEED_INSIGHTS } from "../../shared/insights-seed";
 import { PUBLIC_BASE } from "../../shared/nav-config";
 import { CommentsSection } from "../../shared/comments-section";
@@ -78,28 +79,30 @@ export function InsightsDetailPage({ slug }: { slug: string }) {
         <section className="mt-14 border-t border-border/60 pt-8">
           <p className="text-[11px] uppercase tracking-[0.25em] text-muted-foreground">Insight terkait</p>
           <div className="mt-4 grid gap-3 md:grid-cols-3">
-            {related.map((r) => (
-              <Card key={r.id} className="border-border/60 bg-card/60">
-                <CardContent className="space-y-1.5 p-4">
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                    {CATEGORY_LABEL[r.category]} · {r.readMinutes} mnt
-                  </p>
-                  <Link
-                    href={`${PUBLIC_BASE}/insights/${r.slug}`}
-                    className="block text-sm font-medium leading-snug hover:underline"
-                  >
-                    {r.title}
-                  </Link>
-                  <p className="line-clamp-2 text-xs text-muted-foreground">{r.excerpt}</p>
-                  <Link
-                    href={`${PUBLIC_BASE}/insights/${r.slug}`}
-                    className="mt-1 inline-flex items-center gap-1 text-[11px] text-foreground/80 hover:text-foreground"
-                  >
-                    Baca <ArrowUpRight className="size-3" />
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
+            <Stagger itemClassName="h-full" step={60} cap={300}>
+              {related.map((r) => (
+                <Card key={r.id} className="h-full border-border/60 bg-card/60 transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg">
+                  <CardContent className="space-y-1.5 p-4">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                      {CATEGORY_LABEL[r.category]} · {r.readMinutes} mnt
+                    </p>
+                    <Link
+                      href={`${PUBLIC_BASE}/insights/${r.slug}`}
+                      className="block text-sm font-medium leading-snug hover:underline"
+                    >
+                      {r.title}
+                    </Link>
+                    <p className="line-clamp-2 text-xs text-muted-foreground">{r.excerpt}</p>
+                    <Link
+                      href={`${PUBLIC_BASE}/insights/${r.slug}`}
+                      className="mt-1 inline-flex items-center gap-1 text-[11px] text-foreground/80 hover:text-foreground"
+                    >
+                      Baca <ArrowUpRight className="size-3" />
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </Stagger>
           </div>
         </section>
       )}

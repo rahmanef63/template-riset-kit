@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { SectionHead } from "@/components/templates/_shared/ui/section-head";
+import { Reveal } from "@/components/templates/_shared/motion";
 import { fmtDate } from "../../shared/store";
 import { SEED_READING_LIST } from "../../shared/reading-seed";
 import type { PublicReadingItem } from "../../shared/types";
@@ -97,39 +98,42 @@ export function ReadingListPage() {
         )}
         {filtered.map((r, idx) => (
           <li key={r.id}>
-            <Card className="border-border/60 bg-card/60">
-              <CardContent className="flex gap-4 p-5">
-                <div className="flex shrink-0 items-start pt-0.5 text-xs font-mono text-muted-foreground">
-                  {String(idx + 1).padStart(2, "0")}
-                </div>
-                <div className="min-w-0 flex-1 space-y-2">
-                  <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-                    <BookMarked className="size-3" />
-                    <Badge className={"rounded-full text-[10px] " + CAT_TONE[r.category]}>
-                      {CAT_LABEL[r.category]}
-                    </Badge>
-                    <span>·</span>
-                    <span>{r.year}</span>
-                    <span>·</span>
-                    <span className="normal-case tracking-normal">Ditambah {fmtDate(r.addedAt)}</span>
+            {/* Reveal inside the <li> — Stagger's div children would be invalid <ol> markup. */}
+            <Reveal delay={Math.min(idx * 60, 300)}>
+              <Card className="border-border/60 bg-card/60 transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg">
+                <CardContent className="flex gap-4 p-5">
+                  <div className="flex shrink-0 items-start pt-0.5 text-xs font-mono text-muted-foreground">
+                    {String(idx + 1).padStart(2, "0")}
                   </div>
-                  <Link
-                    href={r.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group inline-flex items-start gap-1.5 text-base font-medium leading-snug hover:underline"
-                  >
-                    <span>{r.title}</span>
-                    <ArrowUpRight className="mt-1 size-3.5 shrink-0 text-muted-foreground group-hover:text-foreground" />
-                  </Link>
-                  <p className="text-xs text-muted-foreground">{r.source}</p>
-                  <p className="text-sm leading-relaxed text-foreground/80">
-                    <span className="text-foreground/60">Kenapa: </span>
-                    {r.why}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                      <BookMarked className="size-3" />
+                      <Badge className={"rounded-full text-[10px] " + CAT_TONE[r.category]}>
+                        {CAT_LABEL[r.category]}
+                      </Badge>
+                      <span>·</span>
+                      <span>{r.year}</span>
+                      <span>·</span>
+                      <span className="normal-case tracking-normal">Ditambah {fmtDate(r.addedAt)}</span>
+                    </div>
+                    <Link
+                      href={r.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group inline-flex items-start gap-1.5 text-base font-medium leading-snug hover:underline"
+                    >
+                      <span>{r.title}</span>
+                      <ArrowUpRight className="mt-1 size-3.5 shrink-0 text-muted-foreground group-hover:text-foreground" />
+                    </Link>
+                    <p className="text-xs text-muted-foreground">{r.source}</p>
+                    <p className="text-sm leading-relaxed text-foreground/80">
+                      <span className="text-foreground/60">Kenapa: </span>
+                      {r.why}
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </Reveal>
           </li>
         ))}
       </ol>

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { SectionHead } from "@/components/templates/_shared/ui/section-head";
+import { Stagger } from "@/components/templates/_shared/motion";
 import { SEED_PUBLICATIONS } from "../../shared/publications-seed";
 import { PUBLIC_BASE } from "../../shared/nav-config";
 import type { Publication } from "../../shared/types";
@@ -95,37 +96,39 @@ export function PublicationsListPage() {
         {filtered.length === 0 && (
           <p className="text-sm text-muted-foreground">Tidak ada publikasi yang cocok dengan filter.</p>
         )}
-        {filtered.map((p) => (
-          <Card key={p.id} className="border-border/60 bg-card/60">
-            <CardContent className="space-y-2 p-5">
-              <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-                <BookOpen className="size-3" />
-                <span>{p.year}</span>
-                <Badge className={"rounded-full text-[10px] " + TYPE_TONE[p.type]}>{TYPE_LABEL[p.type]}</Badge>
-                <span>·</span>
-                <span className="normal-case tracking-normal">{p.venue}</span>
-                {p.pages && <span>· hal {p.pages}</span>}
-              </div>
-              <Link
-                href={`${PUBLIC_BASE}/publications/${p.slug}`}
-                className="block text-base font-medium leading-snug hover:underline"
-              >
-                {p.title}
-              </Link>
-              <p className="text-xs text-muted-foreground">{p.authors}</p>
-              <p className="line-clamp-3 text-sm text-foreground/75">{p.abstract}</p>
-              <div className="flex flex-wrap items-center justify-between gap-2 pt-2 text-[11px] text-muted-foreground">
-                <span className="font-mono">DOI: {p.doi}</span>
+        <Stagger step={50} cap={300}>
+          {filtered.map((p) => (
+            <Card key={p.id} className="border-border/60 bg-card/60 transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg">
+              <CardContent className="space-y-2 p-5">
+                <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                  <BookOpen className="size-3" />
+                  <span>{p.year}</span>
+                  <Badge className={"rounded-full text-[10px] " + TYPE_TONE[p.type]}>{TYPE_LABEL[p.type]}</Badge>
+                  <span>·</span>
+                  <span className="normal-case tracking-normal">{p.venue}</span>
+                  {p.pages && <span>· hal {p.pages}</span>}
+                </div>
                 <Link
                   href={`${PUBLIC_BASE}/publications/${p.slug}`}
-                  className="inline-flex items-center gap-1 text-foreground/80 hover:text-foreground"
+                  className="block text-base font-medium leading-snug hover:underline"
                 >
-                  Lihat detail <ArrowUpRight className="size-3" />
+                  {p.title}
                 </Link>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                <p className="text-xs text-muted-foreground">{p.authors}</p>
+                <p className="line-clamp-3 text-sm text-foreground/75">{p.abstract}</p>
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 text-[11px] text-muted-foreground">
+                  <span className="font-mono">DOI: {p.doi}</span>
+                  <Link
+                    href={`${PUBLIC_BASE}/publications/${p.slug}`}
+                    className="inline-flex items-center gap-1 text-foreground/80 hover:text-foreground"
+                  >
+                    Lihat detail <ArrowUpRight className="size-3" />
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </Stagger>
       </div>
     </section>
   );

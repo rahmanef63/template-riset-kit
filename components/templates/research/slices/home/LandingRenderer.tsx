@@ -10,6 +10,7 @@ import {
   type FeatureItem,
 } from "@/components/templates/_shared";
 import { LandingSectionShell } from "@/components/templates/_shared/landing/LandingSectionShell";
+import { CountUp, Stagger } from "@/components/templates/_shared/motion";
 import { parseConfigBadge } from "@/components/templates/_shared/landing/parse-config";
 import type { LandingSection } from "@/components/templates/_shared/landing/types";
 import { ADMIN_BASE, PUBLIC_BASE } from "../../shared/nav-config";
@@ -27,11 +28,11 @@ const FEATURE_ITEMS: FeatureItem[] = [
   { icon: Quote, title: "Citation Manager", blurb: "APA, MLA, Chicago, IEEE, BibTeX. Auto-extract metadata dari PDF." },
 ];
 
-const STATS = [
-  { value: "10+", label: "Format dokumen" },
-  { value: "5", label: "Citation styles" },
-  { value: "EYD", label: "Mode akademik ID" },
-  { value: "100%", label: "Privasi lokal" },
+const STATS: { num?: number; suffix?: string; text?: string; label: string }[] = [
+  { num: 10, suffix: "+", label: "Format dokumen" },
+  { num: 5, label: "Citation styles" },
+  { text: "EYD", label: "Mode akademik ID" },
+  { num: 100, suffix: "%", label: "Privasi lokal" },
 ];
 
 /**
@@ -60,12 +61,21 @@ export function renderLanding(section: LandingSection, deps: Deps) {
       return (
         <LandingSectionShell section={section} defaultClassName="border-y border-border/50 bg-muted/20">
           <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-4 py-8 sm:px-6 sm:py-10 md:grid-cols-4">
-            {STATS.map((s) => (
-              <div key={s.label}>
-                <p className="text-2xl font-semibold tracking-tight sm:text-3xl">{s.value}</p>
-                <p className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">{s.label}</p>
-              </div>
-            ))}
+            <Stagger step={60}>
+              {STATS.map((s) => (
+                <div key={s.label}>
+                  <p className="text-2xl font-semibold tracking-tight sm:text-3xl">
+                    {s.text ?? (
+                      <>
+                        <CountUp value={s.num ?? 0} />
+                        {s.suffix}
+                      </>
+                    )}
+                  </p>
+                  <p className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">{s.label}</p>
+                </div>
+              ))}
+            </Stagger>
           </div>
         </LandingSectionShell>
       );
@@ -93,20 +103,22 @@ export function renderLanding(section: LandingSection, deps: Deps) {
               cta={{ label: "Buka library", href: `${PUBLIC_BASE}/library` }}
             />
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {deps.documents.slice(0, 3).map((d) => (
-                <Card key={d.id} className="border-border/60 bg-card/60">
-                  <CardContent className="space-y-2 p-5">
-                    <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-                      <BookOpen className="size-3" />
-                      <span>{d.year}</span>
-                      <Badge variant="outline" className="rounded-full text-[10px]">{d.tag}</Badge>
-                    </div>
-                    <h3 className="text-sm font-medium leading-snug">{d.title}</h3>
-                    <p className="text-xs text-muted-foreground">{d.authors}</p>
-                    <p className="line-clamp-3 text-xs text-foreground/70">{d.abstract}</p>
-                  </CardContent>
-                </Card>
-              ))}
+              <Stagger itemClassName="h-full">
+                {deps.documents.slice(0, 3).map((d) => (
+                  <Card key={d.id} className="h-full border-border/60 bg-card/60 transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg">
+                    <CardContent className="space-y-2 p-5">
+                      <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                        <BookOpen className="size-3" />
+                        <span>{d.year}</span>
+                        <Badge variant="outline" className="rounded-full text-[10px]">{d.tag}</Badge>
+                      </div>
+                      <h3 className="text-sm font-medium leading-snug">{d.title}</h3>
+                      <p className="text-xs text-muted-foreground">{d.authors}</p>
+                      <p className="line-clamp-3 text-xs text-foreground/70">{d.abstract}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Stagger>
             </div>
           </div>
         </LandingSectionShell>
@@ -121,16 +133,18 @@ export function renderLanding(section: LandingSection, deps: Deps) {
             subtitle={section.subtitle}
           />
           <div className="mt-10 grid gap-4 md:grid-cols-2">
-            {deps.litReviews.map((r) => (
-              <Card key={r.id} className="border-border/60 bg-card/60">
-                <CardContent className="space-y-2 p-6">
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Topik riset</p>
-                  <h3 className="text-base font-medium">{r.topic}</h3>
-                  <p className="text-sm text-muted-foreground">{r.question}</p>
-                  <p className="text-xs text-foreground/70">{r.docIds.length} paper · {r.matrix.length} entri matrix</p>
-                </CardContent>
-              </Card>
-            ))}
+            <Stagger itemClassName="h-full">
+              {deps.litReviews.map((r) => (
+                <Card key={r.id} className="h-full border-border/60 bg-card/60 transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg">
+                  <CardContent className="space-y-2 p-6">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground">Topik riset</p>
+                    <h3 className="text-base font-medium">{r.topic}</h3>
+                    <p className="text-sm text-muted-foreground">{r.question}</p>
+                    <p className="text-xs text-foreground/70">{r.docIds.length} paper · {r.matrix.length} entri matrix</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </Stagger>
           </div>
         </LandingSectionShell>
       );

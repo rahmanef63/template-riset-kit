@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { SectionHead } from "@/components/templates/_shared/ui/section-head";
+import { Stagger } from "@/components/templates/_shared/motion";
 import { SEED_INSIGHTS } from "../../shared/insights-seed";
 import { PUBLIC_BASE } from "../../shared/nav-config";
 import { fmtDate } from "../../shared/store";
@@ -98,47 +99,49 @@ export function InsightsListPage() {
         {filtered.length === 0 && (
           <p className="text-sm text-muted-foreground">Tidak ada insight yang cocok dengan filter.</p>
         )}
-        {filtered.map((i) => (
-          <Card key={i.id} className="border-border/60 bg-card/60">
-            <CardContent className="space-y-2 p-5">
-              <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
-                <Lightbulb className="size-3" />
-                <Badge className={"rounded-full text-[10px] " + CATEGORY_TONE[i.category]}>
-                  {CATEGORY_LABEL[i.category]}
-                </Badge>
-                <span>·</span>
-                <span className="normal-case tracking-normal">{fmtDate(i.publishedAt)}</span>
-                <span>·</span>
-                <span className="inline-flex items-center gap-1 normal-case tracking-normal">
-                  <Clock className="size-3" /> {i.readMinutes} mnt
-                </span>
-              </div>
-              <Link
-                href={`${PUBLIC_BASE}/insights/${i.slug}`}
-                className="block text-base font-medium leading-snug hover:underline"
-              >
-                {i.title}
-              </Link>
-              <p className="text-xs text-muted-foreground">{i.author}</p>
-              <p className="line-clamp-3 text-sm text-foreground/75">{i.excerpt}</p>
-              <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
-                <div className="flex flex-wrap gap-1">
-                  {i.tags.slice(0, 3).map((t) => (
-                    <Badge key={t} variant="outline" className="rounded-full text-[10px]">
-                      {t}
-                    </Badge>
-                  ))}
+        <Stagger itemClassName="h-full" step={60} cap={300}>
+          {filtered.map((i) => (
+            <Card key={i.id} className="h-full border-border/60 bg-card/60 transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-lg">
+              <CardContent className="space-y-2 p-5">
+                <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                  <Lightbulb className="size-3" />
+                  <Badge className={"rounded-full text-[10px] " + CATEGORY_TONE[i.category]}>
+                    {CATEGORY_LABEL[i.category]}
+                  </Badge>
+                  <span>·</span>
+                  <span className="normal-case tracking-normal">{fmtDate(i.publishedAt)}</span>
+                  <span>·</span>
+                  <span className="inline-flex items-center gap-1 normal-case tracking-normal">
+                    <Clock className="size-3" /> {i.readMinutes} mnt
+                  </span>
                 </div>
                 <Link
                   href={`${PUBLIC_BASE}/insights/${i.slug}`}
-                  className="inline-flex items-center gap-1 text-[11px] text-foreground/80 hover:text-foreground"
+                  className="block text-base font-medium leading-snug hover:underline"
                 >
-                  Baca <ArrowUpRight className="size-3" />
+                  {i.title}
                 </Link>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+                <p className="text-xs text-muted-foreground">{i.author}</p>
+                <p className="line-clamp-3 text-sm text-foreground/75">{i.excerpt}</p>
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
+                  <div className="flex flex-wrap gap-1">
+                    {i.tags.slice(0, 3).map((t) => (
+                      <Badge key={t} variant="outline" className="rounded-full text-[10px]">
+                        {t}
+                      </Badge>
+                    ))}
+                  </div>
+                  <Link
+                    href={`${PUBLIC_BASE}/insights/${i.slug}`}
+                    className="inline-flex items-center gap-1 text-[11px] text-foreground/80 hover:text-foreground"
+                  >
+                    Baca <ArrowUpRight className="size-3" />
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </Stagger>
       </div>
     </section>
   );
