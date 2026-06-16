@@ -178,6 +178,11 @@ export const SEED_STATE: State = {
   projects: SEED_PROJECTS,
   datasets: SEED_DATASETS,
   collaborators: SEED_COLLABORATORS,
+  // Public content verticals are Convex-backed (convex/seed.ts seeds them);
+  // the legacy localStorage SEED_STATE leaves them empty.
+  publications: [],
+  insights: [],
+  readingList: [],
   pages: SEED_PAGES,
   landingSections: SEED_LANDING_SECTIONS,
 };

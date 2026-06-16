@@ -22,6 +22,7 @@ export const SEED_PUBLICATIONS: Publication[] = [
     abstract:
       "Meta-analisis terhadap 42 studi primer (2010-2023) menggunakan random-effects model. Temuan utama: beban kognitif konsisten lintas demografi, dengan friksi onboarding sebagai prediktor terkuat (β=0.41, p<.001).",
     keywords: ["cognitive load", "meta-analysis", "onboarding", "UX"],
+    status: "published",
   },
   {
     id: "pub-2",
@@ -37,6 +38,7 @@ export const SEED_PUBLICATIONS: Publication[] = [
     abstract:
       "Etnografi 6-bulan di 12 UMKM kuliner Bandung. Temuan: adopsi digital terhambat oleh literasi finansial, bukan akses teknologi. Implikasi kebijakan: program literasi finansial > subsidi gadget.",
     keywords: ["ethnography", "UMKM", "literasi finansial", "Bandung"],
+    status: "published",
   },
   {
     id: "pub-3",
@@ -52,6 +54,7 @@ export const SEED_PUBLICATIONS: Publication[] = [
     abstract:
       "Analisis dampak ERP terhadap kongesti dan emisi periode 2018-2024. Korelasi negatif lemah pada koridor utama (r=-0.18). Rekomendasi: integrasi ERP dengan BRT untuk efek substitusi modal.",
     keywords: ["ERP", "transportasi", "Jakarta", "policy analysis"],
+    status: "published",
   },
   {
     id: "pub-4",
@@ -66,6 +69,7 @@ export const SEED_PUBLICATIONS: Publication[] = [
     abstract:
       "Benchmark 6 LLM terhadap 1.200 paragraf tesis berbahasa Indonesia. Metrik: kesesuaian EYD, retensi makna, originalitas (Turnitin proxy). LLM open-weights mendekati closed-source untuk teks ekspositori.",
     keywords: ["LLM", "bahasa Indonesia", "akademik", "benchmark"],
+    status: "published",
   },
   {
     id: "pub-5",
@@ -81,6 +85,7 @@ export const SEED_PUBLICATIONS: Publication[] = [
     abstract:
       "Model GAT untuk merekomendasikan sitasi relevan dari knowledge-base personal peneliti. F1@10 = 0.71 pada dataset 8.400 paper, mengungguli BM25 (+12 pts) dan SciBERT (+4 pts).",
     keywords: ["citation recommendation", "graph attention", "scholarly NLP"],
+    status: "published",
   },
   {
     id: "pub-6",
@@ -95,6 +100,7 @@ export const SEED_PUBLICATIONS: Publication[] = [
     abstract:
       "Survei 64 kampus tentang kebijakan repositori institusional, preprint, dan data sharing. Hanya 18% punya policy formal; 51% bergantung pada inisiatif individual dosen.",
     keywords: ["open science", "kebijakan", "repositori", "data sharing"],
+    status: "published",
   },
 ];
 

@@ -5,7 +5,9 @@ import type { PublicReadingItem } from "./types";
 const now = Date.now();
 const day = (n: number) => now - n * 24 * 60 * 60 * 1000;
 
-export const SEED_READING_LIST: PublicReadingItem[] = [
+// Orphaned seed (public Reading list now reads from Convex via the store). Kept
+// for reference + convex/seed.ts mirror; status omitted (pre-publish rows).
+export const SEED_READING_LIST: Omit<PublicReadingItem, "status">[] = [
   {
     id: "read-1",
     title: "On the dangers of stochastic parrots",

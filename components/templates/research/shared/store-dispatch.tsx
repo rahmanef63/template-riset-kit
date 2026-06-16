@@ -30,6 +30,12 @@ export function useConvexDispatch(state: State): (a: Action) => void {
   const mDatasetRemove = useMutation(api.datasets.remove);
   const mCollabUpsert = useMutation(api.collaborators.upsert);
   const mCollabRemove = useMutation(api.collaborators.remove);
+  const mPubUpsert = useMutation(api.publications.upsert);
+  const mPubRemove = useMutation(api.publications.remove);
+  const mInsightUpsert = useMutation(api.insights.upsert);
+  const mInsightRemove = useMutation(api.insights.remove);
+  const mReadingUpsert = useMutation(api.readingList.upsert);
+  const mReadingRemove = useMutation(api.readingList.remove);
   const mPageUpsert = useMutation(api.pages.upsert);
   const mPageRemove = useMutation(api.pages.remove);
   const mLandingUpsert = useMutation(api.landing.upsert);
@@ -45,6 +51,9 @@ export function useConvexDispatch(state: State): (a: Action) => void {
       projects: new Set(state.projects.map((p) => p.id)),
       datasets: new Set(state.datasets.map((d) => d.id)),
       collaborators: new Set(state.collaborators.map((c) => c.id)),
+      publications: new Set(state.publications.map((p) => p.id)),
+      insights: new Set(state.insights.map((i) => i.id)),
+      readingList: new Set(state.readingList.map((r) => r.id)),
     }),
     [state],
   );
@@ -153,6 +162,42 @@ export function useConvexDispatch(state: State): (a: Action) => void {
         }
         case "collaborator.delete":
           void mCollabRemove({ id: action.id as Id<"risetCollaborators"> }).catch(fail);
+          break;
+
+        case "publication.upsert": {
+          const { id, ...d } = action.publication;
+          void (knownIds.publications.has(id)
+            ? mPubUpsert({ id: id as Id<"risetPublications">, ...d })
+            : mPubUpsert(d)
+          ).catch(fail);
+          break;
+        }
+        case "publication.delete":
+          void mPubRemove({ id: action.id as Id<"risetPublications"> }).catch(fail);
+          break;
+
+        case "insight.upsert": {
+          const { id, ...d } = action.insight;
+          void (knownIds.insights.has(id)
+            ? mInsightUpsert({ id: id as Id<"risetInsights">, ...d })
+            : mInsightUpsert(d)
+          ).catch(fail);
+          break;
+        }
+        case "insight.delete":
+          void mInsightRemove({ id: action.id as Id<"risetInsights"> }).catch(fail);
+          break;
+
+        case "reading.upsert": {
+          const { id, ...d } = action.reading;
+          void (knownIds.readingList.has(id)
+            ? mReadingUpsert({ id: id as Id<"risetReadingList">, ...d })
+            : mReadingUpsert(d)
+          ).catch(fail);
+          break;
+        }
+        case "reading.delete":
+          void mReadingRemove({ id: action.id as Id<"risetReadingList"> }).catch(fail);
           break;
 
         case "PAGE_DELETE":

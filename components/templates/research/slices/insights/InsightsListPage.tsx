@@ -9,9 +9,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { SectionHead } from "@/components/templates/_shared/ui/section-head";
 import { Stagger } from "@/components/templates/_shared/motion";
-import { SEED_INSIGHTS } from "../../shared/insights-seed";
 import { PUBLIC_BASE } from "../../shared/nav-config";
-import { fmtDate } from "../../shared/store";
+import { fmtDate, useInsights } from "../../shared/store";
 import type { Insight } from "../../shared/types";
 
 const CATEGORY_LABEL: Record<Insight["category"], string> = {
@@ -42,21 +41,25 @@ const FILTERS: { value: CatFilter; label: string }[] = [
 ];
 
 export function InsightsListPage() {
+  const insights = useInsights();
   const [q, setQ] = React.useState("");
   const [cat, setCat] = React.useState<CatFilter>("all");
 
   const filtered = React.useMemo(() => {
     const needle = q.toLowerCase().trim();
-    return SEED_INSIGHTS.filter((i) => {
-      if (cat !== "all" && i.category !== cat) return false;
-      if (!needle) return true;
-      return (
-        i.title.toLowerCase().includes(needle) ||
-        i.excerpt.toLowerCase().includes(needle) ||
-        i.tags.some((t) => t.toLowerCase().includes(needle))
-      );
-    }).sort((a, b) => b.publishedAt - a.publishedAt);
-  }, [q, cat]);
+    return insights
+      .filter((i) => i.status === "published")
+      .filter((i) => {
+        if (cat !== "all" && i.category !== cat) return false;
+        if (!needle) return true;
+        return (
+          i.title.toLowerCase().includes(needle) ||
+          i.excerpt.toLowerCase().includes(needle) ||
+          i.tags.some((t) => t.toLowerCase().includes(needle))
+        );
+      })
+      .sort((a, b) => b.publishedAt - a.publishedAt);
+  }, [insights, q, cat]);
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-16">

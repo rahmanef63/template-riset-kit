@@ -7,10 +7,9 @@ import { ArrowLeft, ArrowUpRight, Clock, Lightbulb } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Stagger } from "@/components/templates/_shared/motion";
-import { SEED_INSIGHTS } from "../../shared/insights-seed";
 import { PUBLIC_BASE } from "../../shared/nav-config";
 import { CommentsSection } from "../../shared/comments-section";
-import { fmtDate } from "../../shared/store";
+import { fmtDate, useInsight, useInsights, useStore } from "../../shared/store";
 import type { Insight } from "../../shared/types";
 
 const CATEGORY_LABEL: Record<Insight["category"], string> = {
@@ -22,16 +21,29 @@ const CATEGORY_LABEL: Record<Insight["category"], string> = {
 };
 
 export function InsightsDetailPage({ slug }: { slug: string }) {
-  const insight = SEED_INSIGHTS.find((i) => i.slug === slug);
-  if (!insight) notFound();
+  const { ready } = useStore();
+  const insights = useInsights();
+  const insight = useInsight(slug);
 
   const related = React.useMemo(() => {
-    return SEED_INSIGHTS.filter(
-      (i) => i.slug !== slug && (i.category === insight.category || i.tags.some((t) => insight.tags.includes(t))),
-    )
+    if (!insight) return [];
+    return insights
+      .filter((i) => i.status === "published")
+      .filter(
+        (i) =>
+          i.slug !== slug &&
+          (i.category === insight.category || i.tags.some((t) => insight.tags.includes(t))),
+      )
       .sort((a, b) => b.publishedAt - a.publishedAt)
       .slice(0, 3);
-  }, [slug, insight]);
+  }, [insights, slug, insight]);
+
+  if (ready && (!insight || insight.status !== "published")) notFound();
+  if (!insight) {
+    return (
+      <div className="mx-auto max-w-3xl px-6 py-16 text-sm text-muted-foreground">Memuat...</div>
+    );
+  }
 
   const paragraphs = insight.body.split("\n\n");
 

@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as _shared_auth from "../_shared/auth.js";
 import type * as aiSessions from "../aiSessions.js";
 import type * as auth from "../auth.js";
 import type * as backup from "../backup.js";
@@ -24,11 +25,14 @@ import type * as features_notion__schema from "../features/notion/_schema.js";
 import type * as features_notion_mutation from "../features/notion/mutation.js";
 import type * as features_notion_query from "../features/notion/query.js";
 import type * as http from "../http.js";
+import type * as insights from "../insights.js";
 import type * as landing from "../landing.js";
 import type * as litReviews from "../litReviews.js";
 import type * as notes from "../notes.js";
 import type * as pages from "../pages.js";
 import type * as projects from "../projects.js";
+import type * as publications from "../publications.js";
+import type * as readingList from "../readingList.js";
 import type * as seed from "../seed.js";
 import type * as settings from "../settings.js";
 import type * as setup from "../setup.js";
@@ -43,6 +47,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "_shared/auth": typeof _shared_auth;
   aiSessions: typeof aiSessions;
   auth: typeof auth;
   backup: typeof backup;
@@ -59,11 +64,14 @@ declare const fullApi: ApiFromModules<{
   "features/notion/mutation": typeof features_notion_mutation;
   "features/notion/query": typeof features_notion_query;
   http: typeof http;
+  insights: typeof insights;
   landing: typeof landing;
   litReviews: typeof litReviews;
   notes: typeof notes;
   pages: typeof pages;
   projects: typeof projects;
+  publications: typeof publications;
+  readingList: typeof readingList;
   seed: typeof seed;
   settings: typeof settings;
   setup: typeof setup;

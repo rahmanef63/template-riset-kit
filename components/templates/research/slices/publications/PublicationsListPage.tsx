@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { SectionHead } from "@/components/templates/_shared/ui/section-head";
 import { Stagger } from "@/components/templates/_shared/motion";
-import { SEED_PUBLICATIONS } from "../../shared/publications-seed";
+import { usePublications } from "../../shared/store";
 import { PUBLIC_BASE } from "../../shared/nav-config";
 import type { Publication } from "../../shared/types";
 
@@ -40,12 +40,15 @@ const FILTERS: { value: TypeFilter; label: string }[] = [
 ];
 
 export function PublicationsListPage() {
+  const publications = usePublications();
   const [q, setQ] = React.useState("");
   const [type, setType] = React.useState<TypeFilter>("all");
 
   const filtered = React.useMemo(() => {
     const needle = q.toLowerCase().trim();
-    return SEED_PUBLICATIONS.filter((p) => {
+    return publications
+      .filter((p) => p.status === "published")
+      .filter((p) => {
       if (type !== "all" && p.type !== type) return false;
       if (!needle) return true;
       return (
@@ -55,7 +58,7 @@ export function PublicationsListPage() {
         p.keywords.some((k) => k.toLowerCase().includes(needle))
       );
     }).sort((a, b) => b.year - a.year);
-  }, [q, type]);
+  }, [publications, q, type]);
 
   return (
     <section className="mx-auto max-w-6xl px-6 py-16">

@@ -9,8 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { SectionHead } from "@/components/templates/_shared/ui/section-head";
 import { Reveal } from "@/components/templates/_shared/motion";
-import { fmtDate } from "../../shared/store";
-import { SEED_READING_LIST } from "../../shared/reading-seed";
+import { fmtDate, useReadingList } from "../../shared/store";
 import type { PublicReadingItem } from "../../shared/types";
 
 const CAT_LABEL: Record<PublicReadingItem["category"], string> = {
@@ -41,21 +40,25 @@ const FILTERS: { value: CatFilter; label: string }[] = [
 ];
 
 export function ReadingListPage() {
+  const items = useReadingList();
   const [q, setQ] = React.useState("");
   const [cat, setCat] = React.useState<CatFilter>("all");
 
   const filtered = React.useMemo(() => {
     const needle = q.toLowerCase().trim();
-    return SEED_READING_LIST.filter((r) => {
-      if (cat !== "all" && r.category !== cat) return false;
-      if (!needle) return true;
-      return (
-        r.title.toLowerCase().includes(needle) ||
-        r.source.toLowerCase().includes(needle) ||
-        r.why.toLowerCase().includes(needle)
-      );
-    }).sort((a, b) => b.addedAt - a.addedAt);
-  }, [q, cat]);
+    return items
+      .filter((r) => r.status === "published")
+      .filter((r) => {
+        if (cat !== "all" && r.category !== cat) return false;
+        if (!needle) return true;
+        return (
+          r.title.toLowerCase().includes(needle) ||
+          r.source.toLowerCase().includes(needle) ||
+          r.why.toLowerCase().includes(needle)
+        );
+      })
+      .sort((a, b) => b.addedAt - a.addedAt);
+  }, [items, q, cat]);
 
   return (
     <section className="mx-auto max-w-5xl px-6 py-16">

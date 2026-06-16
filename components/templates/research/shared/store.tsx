@@ -39,12 +39,16 @@ function Provider({ children }: { children: React.ReactNode }) {
   const projects = useQuery(api.projects.listAll, {});
   const datasets = useQuery(api.datasets.list, {});
   const collaborators = useQuery(api.collaborators.list, {});
+  const publications = useQuery(api.publications.listAll, {});
+  const insights = useQuery(api.insights.listAll, {});
+  const readingList = useQuery(api.readingList.listAll, {});
   const pageRows = useQuery(api.pages.list, {});
   const landingRows = useQuery(api.landing.list, {});
 
   const queries = [
     documents, notes, citations, litReviews, aiSessions,
-    projects, datasets, collaborators, pageRows, landingRows,
+    projects, datasets, collaborators, publications, insights, readingList,
+    pageRows, landingRows,
   ];
   const ready = queries.every((q) => q !== undefined);
   const progress = Math.round((queries.filter((q) => q !== undefined).length / queries.length) * 100);
@@ -59,10 +63,13 @@ function Provider({ children }: { children: React.ReactNode }) {
       projects: withId(projects),
       datasets: withId(datasets),
       collaborators: withId(collaborators),
+      publications: withId(publications),
+      insights: withId(insights),
+      readingList: withId(readingList),
       pages: (pageRows ?? []) as PageEntry[],
       landingSections: (landingRows ?? []) as LandingSection[],
     }),
-    [documents, notes, citations, litReviews, aiSessions, projects, datasets, collaborators, pageRows, landingRows],
+    [documents, notes, citations, litReviews, aiSessions, projects, datasets, collaborators, publications, insights, readingList, pageRows, landingRows],
   );
 
   const dispatch = useConvexDispatch(state);
@@ -159,6 +166,23 @@ export function useDatasets() {
 }
 export function useCollaborators() {
   return useStore().state.collaborators;
+}
+export function usePublications() {
+  return useStore().state.publications;
+}
+export function usePublication(slug: string) {
+  const { state } = useStore();
+  return state.publications.find((p) => p.slug === slug) ?? null;
+}
+export function useInsights() {
+  return useStore().state.insights;
+}
+export function useInsight(slug: string) {
+  const { state } = useStore();
+  return state.insights.find((i) => i.slug === slug) ?? null;
+}
+export function useReadingList() {
+  return useStore().state.readingList;
 }
 
 export { nid, slugify, fmtDate, rel } from "@/components/templates/_shared/utils";

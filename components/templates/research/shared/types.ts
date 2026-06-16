@@ -56,7 +56,11 @@ export type AiReaderSession = {
   ts: number;
 };
 
+/** Publish-state shared by public content verticals. Seeds default to "published". */
+export type PublishStatus = "draft" | "published";
+
 /** Public publications — peer-reviewed / preprint output dari workspace. */
+export type PublicationType = "journal" | "preprint" | "conference" | "report" | "chapter";
 export type Publication = {
   id: string;
   slug: string;
@@ -64,27 +68,31 @@ export type Publication = {
   authors: string;
   year: number;
   venue: string;            // jurnal / konferensi / preprint server
-  type: "journal" | "preprint" | "conference" | "report" | "chapter";
+  type: PublicationType;
   doi: string;              // placeholder OK
   abstract: string;
   keywords: string[];
   pages?: string;           // "88-104"
   pdfHref?: string;         // "#" placeholder
+  status: PublishStatus;
 };
 
 /** Public reading-list — curated bacaan eksternal (bukan publikasi sendiri). */
+export type ReadingCategory = "paper" | "essay" | "book" | "thread" | "report";
 export type PublicReadingItem = {
   id: string;
   title: string;
   source: string;           // jurnal / penulis / institusi
   year: number;
-  category: "paper" | "essay" | "book" | "thread" | "report";
+  category: ReadingCategory;
   href: string;             // external URL ("#" placeholder)
   why: string;              // why-it-matters blurb
   addedAt: number;
+  status: PublishStatus;
 };
 
 /** Public insights — short research-blog essays. Lebih ringan dari Publication. */
+export type InsightCategory = "methodology" | "tool-review" | "field-notes" | "opinion" | "tutorial";
 export type Insight = {
   id: string;
   slug: string;
@@ -92,10 +100,11 @@ export type Insight = {
   author: string;
   publishedAt: number;
   readMinutes: number;
-  category: "methodology" | "tool-review" | "field-notes" | "opinion" | "tutorial";
+  category: InsightCategory;
   excerpt: string;
   body: string;             // markdown-ish plain text
   tags: string[];
+  status: PublishStatus;
 };
 
 /** Research project — long-running line of inquiry. */
@@ -150,6 +159,9 @@ export type State = {
   projects: Project[];
   datasets: Dataset[];
   collaborators: Collaborator[];
+  publications: Publication[];
+  insights: Insight[];
+  readingList: PublicReadingItem[];
   /** O-wave: public pages CRUD slice. */
   pages: import("@/components/templates/_shared/pages/types").PageEntry[];
   /** AB-wave: home-page section composition. Ordered + toggleable. */
@@ -180,5 +192,11 @@ export type Action =
   | { type: "dataset.delete"; id: string }
   | { type: "collaborator.upsert"; collaborator: Collaborator }
   | { type: "collaborator.delete"; id: string }
+  | { type: "publication.upsert"; publication: Publication }
+  | { type: "publication.delete"; id: string }
+  | { type: "insight.upsert"; insight: Insight }
+  | { type: "insight.delete"; id: string }
+  | { type: "reading.upsert"; reading: PublicReadingItem }
+  | { type: "reading.delete"; id: string }
   | { type: "hydrate"; state: State }
   | { type: "reset" };

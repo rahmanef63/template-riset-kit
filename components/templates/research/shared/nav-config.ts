@@ -8,9 +8,12 @@ import {
   LayoutDashboard,
   LayoutTemplate,
   Library,
+  Lightbulb,
+  Mail,
   NotebookPen,
   Newspaper,
   Quote,
+  ScrollText,
   Settings,
   StickyNote,
   Users,
@@ -83,6 +86,9 @@ export function buildAdminPrimaryNav(state: State): AdminNavItem[] {
       children: [
         { id: "pages-all",     label: "All pages",    href: `${ADMIN_BASE}/pages`,   icon: Newspaper,      count: customPages || null },
         { id: "pages-landing", label: "Landing page", href: `${ADMIN_BASE}/landing`, icon: LayoutTemplate, count: enabledLanding || null },
+        { id: "publications",  label: "Publications", href: `${ADMIN_BASE}/publications`, icon: BookOpen,  count: state.publications.length || null },
+        { id: "insights",      label: "Insights",     href: `${ADMIN_BASE}/insights`,    icon: Lightbulb, count: state.insights.length || null },
+        { id: "reading-list",  label: "Reading list", href: `${ADMIN_BASE}/reading-list`, icon: ScrollText, count: state.readingList.length || null },
         // BF-wave — dynamic custom pages (every admin-created page shows here).
         ...buildCustomPageNavItems(state.pages, `${ADMIN_BASE}/pages`),
       ],
@@ -96,6 +102,7 @@ export function buildAdminPrimaryNav(state: State): AdminNavItem[] {
     { id: "ai-reader",    label: "AI Reader",    href: `${ADMIN_BASE}/ai-reader`,    icon: Bot,          count: null },
     { id: "lit-review",   label: "Lit Review",   href: `${ADMIN_BASE}/lit-review`,   icon: Library,      count: state.litReviews.length },
     { id: "collaborators",label: "Collaborators",href: `${ADMIN_BASE}/collaborators`,icon: Users,        count: state.collaborators.length },
+    { id: "subscribers",  label: "Subscribers",  href: `${ADMIN_BASE}/subscribers`,   icon: Mail,         count: null },
     { id: "notion-notes", label: "Notion",       href: `${ADMIN_BASE}/notion-notes`, icon: NotebookPen,  count: null },
     { id: "database",     label: "Database",     href: `${ADMIN_BASE}/database`,      icon: Database,     count: null },
   ];

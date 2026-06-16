@@ -7,7 +7,9 @@ import type { Insight } from "./types";
 const now = Date.now();
 const day = (n: number) => now - n * 24 * 60 * 60 * 1000;
 
-export const SEED_INSIGHTS: Insight[] = [
+// Orphaned seed (public Insights now read from Convex via the store). Kept for
+// reference + convex/seed.ts mirror; status omitted since these are pre-publish.
+export const SEED_INSIGHTS: Omit<Insight, "status">[] = [
   {
     id: "ins-1",
     slug: "memilih-software-citation-manager-2026",

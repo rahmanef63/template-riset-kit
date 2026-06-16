@@ -8,12 +8,12 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { SEED_PUBLICATIONS } from "../../shared/publications-seed";
+import { usePublication, useStore } from "../../shared/store";
 import { PUBLIC_BASE } from "../../shared/nav-config";
 import { CommentsSection } from "../../shared/comments-section";
+import type { Publication } from "../../shared/types";
 
-function bibtexFor(slug: string) {
-  const p = SEED_PUBLICATIONS.find((x) => x.slug === slug);
+function bibtexFor(p: Publication | null) {
   if (!p) return "";
   const key = p.slug.replace(/-/g, "");
   return [
@@ -31,10 +31,16 @@ function bibtexFor(slug: string) {
 }
 
 export function PublicationsDetailPage({ slug }: { slug: string }) {
-  const pub = SEED_PUBLICATIONS.find((p) => p.slug === slug);
-  if (!pub) notFound();
+  const { ready } = useStore();
+  const pub = usePublication(slug);
+  const bibtex = React.useMemo(() => bibtexFor(pub), [pub]);
 
-  const bibtex = React.useMemo(() => bibtexFor(slug), [slug]);
+  if (ready && (!pub || pub.status !== "published")) notFound();
+  if (!pub) {
+    return (
+      <div className="mx-auto max-w-3xl px-6 py-16 text-sm text-muted-foreground">Memuat...</div>
+    );
+  }
 
   function copyBib() {
     navigator.clipboard
@@ -43,9 +49,10 @@ export function PublicationsDetailPage({ slug }: { slug: string }) {
       .catch(() => toast.error("Gagal menyalin."));
   }
 
+  const doi = pub.doi;
   function copyDoi() {
     navigator.clipboard
-      .writeText(pub!.doi)
+      .writeText(doi)
       .then(() => toast.success("DOI disalin."))
       .catch(() => toast.error("Gagal menyalin."));
   }

@@ -135,6 +135,69 @@ export default defineSchema({
     initials: v.string(),
   }),
 
+  risetPublications: defineTable({
+    slug: v.string(),
+    title: v.string(),
+    authors: v.string(),
+    year: v.number(),
+    venue: v.string(),
+    type: v.union(
+      v.literal("journal"),
+      v.literal("preprint"),
+      v.literal("conference"),
+      v.literal("report"),
+      v.literal("chapter"),
+    ),
+    doi: v.string(),
+    abstract: v.string(),
+    keywords: v.array(v.string()),
+    pages: v.optional(v.string()),
+    pdfHref: v.optional(v.string()),
+    status: v.union(v.literal("draft"), v.literal("published")),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_status", ["status"]),
+
+  risetInsights: defineTable({
+    slug: v.string(),
+    title: v.string(),
+    author: v.string(),
+    publishedAt: v.number(),
+    readMinutes: v.number(),
+    category: v.union(
+      v.literal("methodology"),
+      v.literal("tool-review"),
+      v.literal("field-notes"),
+      v.literal("opinion"),
+      v.literal("tutorial"),
+    ),
+    excerpt: v.string(),
+    body: v.string(),
+    tags: v.array(v.string()),
+    status: v.union(v.literal("draft"), v.literal("published")),
+  })
+    .index("by_slug", ["slug"])
+    .index("by_status", ["status"]),
+
+  risetReadingList: defineTable({
+    title: v.string(),
+    source: v.string(),
+    year: v.number(),
+    category: v.union(
+      v.literal("paper"),
+      v.literal("essay"),
+      v.literal("book"),
+      v.literal("thread"),
+      v.literal("report"),
+    ),
+    href: v.string(),
+    why: v.string(),
+    addedAt: v.number(),
+    status: v.union(v.literal("draft"), v.literal("published")),
+  })
+    .index("by_addedAt", ["addedAt"])
+    .index("by_status", ["status"]),
+
   subscribers: defineTable({
     email: v.string(),
     status: v.union(v.literal("pending"), v.literal("confirmed"), v.literal("unsubscribed")),
