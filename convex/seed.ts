@@ -1,6 +1,7 @@
 import { mutation } from "./_generated/server";
 import { ConvexError } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
+import { requireUser } from "./_shared/auth";
 
 // Demo seed for Riset Kit OS.
 // - `seed:run`        — CLI/power use: wipes content then inserts (npx convex run seed:run).
@@ -155,6 +156,7 @@ const CONTENT_TABLES = [
 export const run = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireUser(ctx);
     for (const t of CONTENT_TABLES) {
       for (const row of await ctx.db.query(t).take(1000)) await ctx.db.delete(row._id);
     }
@@ -168,6 +170,7 @@ export const run = mutation({
 export const syncLanding = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireUser(ctx);
     let inserted = 0;
     let reordered = 0;
     for (const s of LANDING) {
@@ -196,6 +199,7 @@ export const syncLanding = mutation({
 export const syncDocumentImages = mutation({
   args: {},
   handler: async (ctx) => {
+    await requireUser(ctx);
     let patched = 0;
     const wanted = DOCUMENTS.filter(
       (d): d is typeof d & { coverImage: string } => "coverImage" in d,
