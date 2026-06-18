@@ -1,6 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { requireUser } from "./_shared/auth";
+import { optionalUser, requireUser } from "./_shared/auth";
 
 const ROLE = v.union(
   v.literal("PI"),
@@ -12,7 +12,10 @@ const ROLE = v.union(
 
 export const list = query({
   args: {},
-  handler: async (ctx) => ctx.db.query("risetCollaborators").take(200),
+  handler: async (ctx) => {
+    if (!(await optionalUser(ctx))) return [];
+    return ctx.db.query("risetCollaborators").take(200);
+  },
 });
 
 export const upsert = mutation({
