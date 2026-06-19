@@ -19,6 +19,7 @@ import {
 import type { LandingSection } from "@/components/templates/_shared/landing/types";
 import { SEED_PUBLICATIONS } from "../../shared/publications-seed";
 import { PUBLIC_BASE } from "../../shared/nav-config";
+import { usePublications } from "../../shared/store";
 import type { Document, Publication } from "../../shared/types";
 
 /** Riset Kit default content for the shared landing sections — every
@@ -94,13 +95,11 @@ const TYPE_LABEL: Record<Publication["type"], string> = {
 
 /** Latest publications teaser — backs the "blog"/"changelog" landing
  *  kinds with the publications catalog (full list at /publications). */
-export function PublicationsTeaser({
-  section,
-  publications = SEED_PUBLICATIONS,
-}: {
-  section: LandingSection;
-  publications?: Publication[];
-}) {
+export function PublicationsTeaser({ section }: { section: LandingSection }) {
+  // Read the live publications catalog (admin-editable at /admin/publications);
+  // fall back to the seed list only when the store is empty/unseeded.
+  const fromStore = usePublications();
+  const publications: Publication[] = fromStore.length > 0 ? fromStore : SEED_PUBLICATIONS;
   const limit = cfgNumber(parseConfigObject(section.config), "limit") ?? 3;
   const latest = [...publications].sort((a, b) => b.year - a.year).slice(0, limit);
   if (latest.length === 0) return null;
