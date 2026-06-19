@@ -1,4 +1,4 @@
-import { CitationsPage } from "@/components/templates/research/slices/citations/CitationsPage";
+import { CitationsPage } from "@/features/citations/CitationsPage";
 
 export default function Page() {
   return <CitationsPage />;

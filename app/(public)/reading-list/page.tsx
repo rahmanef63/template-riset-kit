@@ -1,4 +1,4 @@
-import { ReadingListPage } from "@/components/templates/research/slices/reading-list/ReadingListPage";
+import { ReadingListPage } from "@/features/reading-list/ReadingListPage";
 
 export default function Page() {
   return <ReadingListPage />;

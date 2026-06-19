@@ -1,4 +1,4 @@
-import { HomePage } from "@/components/templates/research/slices/home/HomePage";
+import { HomePage } from "@/features/home/HomePage";
 
 export default function Page() {
   return <HomePage />;

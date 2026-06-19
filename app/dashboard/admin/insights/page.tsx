@@ -1,4 +1,4 @@
-import { InsightsListView } from "@/components/templates/research/slices/admin/insights/InsightsListView";
+import { InsightsListView } from "@/features/admin/insights/InsightsListView";
 export default function Page() {
   return <InsightsListView />;
 }

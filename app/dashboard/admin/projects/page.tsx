@@ -1,4 +1,4 @@
-import { ProjectsListView } from "@/components/templates/research/slices/admin/projects/ProjectsListView";
+import { ProjectsListView } from "@/features/admin/projects/ProjectsListView";
 export default function Page() {
   return <ProjectsListView />;
 }

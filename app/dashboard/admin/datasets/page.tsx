@@ -1,4 +1,4 @@
-import { DatasetsView } from "@/components/templates/research/slices/admin/datasets/DatasetsView";
+import { DatasetsView } from "@/features/admin/datasets/DatasetsView";
 export default function Page() {
   return <DatasetsView />;
 }

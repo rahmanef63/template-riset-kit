@@ -1,4 +1,4 @@
-import { AboutPage } from "@/components/templates/research/slices/about/AboutPage";
+import { AboutPage } from "@/features/about/AboutPage";
 
 export default function Page() {
   return <AboutPage />;

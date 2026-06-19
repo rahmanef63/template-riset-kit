@@ -1,4 +1,4 @@
-import { PublicationsListView } from "@/components/templates/research/slices/admin/publications/PublicationsListView";
+import { PublicationsListView } from "@/features/admin/publications/PublicationsListView";
 export default function Page() {
   return <PublicationsListView />;
 }

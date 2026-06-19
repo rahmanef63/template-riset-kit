@@ -1,4 +1,4 @@
-import { PublicationsListPage } from "@/components/templates/research/slices/publications/PublicationsListPage";
+import { PublicationsListPage } from "@/features/publications/PublicationsListPage";
 
 export default function Page() {
   return <PublicationsListPage />;

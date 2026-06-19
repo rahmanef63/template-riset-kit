@@ -1,4 +1,4 @@
-import { SubscribersView } from "@/components/templates/research/slices/admin/subscribers/SubscribersView";
+import { SubscribersView } from "@/features/admin/subscribers/SubscribersView";
 export default function Page() {
   return <SubscribersView />;
 }
