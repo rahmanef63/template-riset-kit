@@ -1,5 +1,11 @@
 "use client";
 
+import * as React from "react";
+import { useMutation, useQuery } from "convex/react";
+import { toast } from "sonner";
+import { Save } from "lucide-react";
+import { api } from "@/convex/_generated/api";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,10 +13,52 @@ import { SectionHead } from "@/components/templates/_shared/ui/section-head";
 import { UpdateCard } from "@/components/admin/update-card";
 import { BackupCard } from "@/components/admin/backup-card";
 import { ThemePresetSwitcher } from "@/features/theme-presets";
+import { ImagePickerButton, imageRef } from "@/features/image-picker";
 import { DEFAULT_SITE_CONFIG } from "../../../shared/site-config";
 
 export function SettingsView() {
   const c = DEFAULT_SITE_CONFIG;
+  const settings = useQuery(api.settings.get);
+  const upsert = useMutation(api.settings.upsert);
+  const genUploadUrl = useMutation(api.files.generateUploadUrl);
+  const getFileUrl = useMutation(api.files.getUrl);
+  const [logoUrl, setLogoUrl] = React.useState("");
+  const [saving, setSaving] = React.useState(false);
+
+  React.useEffect(() => {
+    if (settings === undefined) return;
+    setLogoUrl(settings?.logoUrl ?? "");
+  }, [settings]);
+
+  const onUpload = async (file: File): Promise<string> => {
+    const uploadUrl = await genUploadUrl();
+    const res = await fetch(uploadUrl, {
+      method: "POST",
+      headers: { "Content-Type": file.type },
+      body: file,
+    });
+    const { storageId } = (await res.json()) as { storageId: string };
+    return ((await getFileUrl({ storageId: storageId as never })) as string) ?? "";
+  };
+
+  const saveLogo = async () => {
+    setSaving(true);
+    try {
+      // merge with current settings so we never wipe other fields
+      await upsert({
+        siteName: settings?.siteName ?? c.brandName,
+        ownerName: settings?.ownerName ?? c.ownerName,
+        contactEmail: settings?.contactEmail ?? c.email,
+        logoUrl,
+      });
+      toast.success("Logo tersimpan");
+    } catch {
+      toast.error("Gagal menyimpan logo");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <div className="space-y-5">
       <SectionHead eyebrow="Pengaturan" title="Settings" subtitle="Konfigurasi workspace, AI, dan branding." />
@@ -35,6 +83,37 @@ export function SettingsView() {
               <Label className="text-xs">Domain</Label>
               <Input defaultValue={c.baseUrl} className="mt-1" />
             </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-border/60 bg-card/60">
+        <CardContent className="space-y-3 p-5">
+          <h3 className="text-base font-medium">Logo</h3>
+          <p className="text-sm text-muted-foreground">
+            Logo brand tampil di header situs publik. Jika kosong, header pakai wordmark teks.
+          </p>
+          <div className="flex items-center gap-4">
+            {logoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={logoUrl} alt="Logo" className="h-12 w-auto rounded-md border border-border/60 bg-background object-contain p-1" />
+            ) : (
+              <div className="grid h-12 w-12 place-items-center rounded-md border border-dashed border-border/60 text-xs text-muted-foreground">
+                —
+              </div>
+            )}
+            <ImagePickerButton
+              label={logoUrl ? "Ganti logo" : "Upload logo"}
+              title="Logo"
+              onUpload={onUpload}
+              searchUnsplash={undefined}
+              onChange={(img) => setLogoUrl(imageRef(img) ?? "")}
+            />
+          </div>
+          <div className="flex justify-end">
+            <Button size="sm" className="gap-1" onClick={saveLogo} disabled={saving || settings === undefined}>
+              <Save className="size-4" /> {saving ? "Menyimpan…" : "Simpan"}
+            </Button>
           </div>
         </CardContent>
       </Card>
