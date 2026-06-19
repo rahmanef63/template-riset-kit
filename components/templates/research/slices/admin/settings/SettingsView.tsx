@@ -8,6 +8,7 @@ import { api } from "@/convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { SectionHead } from "@/components/templates/_shared/ui/section-head";
 import { UpdateCard } from "@/components/admin/update-card";
@@ -28,6 +29,9 @@ export function SettingsView() {
   const [socialLinkedin, setSocialLinkedin] = React.useState("");
   const [socialGithub, setSocialGithub] = React.useState("");
   const [socialYoutube, setSocialYoutube] = React.useState("");
+  const [aboutHeadline, setAboutHeadline] = React.useState("");
+  const [aboutBody, setAboutBody] = React.useState("");
+  const [aboutImageUrl, setAboutImageUrl] = React.useState("");
   const [saving, setSaving] = React.useState(false);
 
   React.useEffect(() => {
@@ -38,6 +42,9 @@ export function SettingsView() {
     setSocialLinkedin(sc.linkedin ?? "");
     setSocialGithub(sc.github ?? "");
     setSocialYoutube(sc.youtube ?? "");
+    setAboutHeadline(settings?.aboutHeadline ?? "");
+    setAboutBody(settings?.seoDescription ?? "");
+    setAboutImageUrl(settings?.aboutImageUrl ?? "");
   }, [settings]);
 
   const onUpload = async (file: File): Promise<string> => {
@@ -65,6 +72,9 @@ export function SettingsView() {
         contactEmail: settings?.contactEmail ?? c.email,
         logoUrl,
         socials: Object.keys(socialsMap).length ? JSON.stringify(socialsMap) : undefined,
+        aboutHeadline: aboutHeadline || undefined,
+        seoDescription: aboutBody || undefined,
+        aboutImageUrl: aboutImageUrl || undefined,
       });
       toast.success("Pengaturan tersimpan");
     } catch {
@@ -167,6 +177,59 @@ export function SettingsView() {
                   placeholder="https://youtube.com/@username"
                 />
               </div>
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Button size="sm" className="gap-1" onClick={saveLogo} disabled={saving || settings === undefined}>
+              <Save className="size-4" /> {saving ? "Menyimpan…" : "Simpan"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-border/60 bg-card/60">
+        <CardContent className="space-y-3 p-5">
+          <h3 className="text-base font-medium">About page</h3>
+          <div>
+            <Label className="text-xs">Judul / headline</Label>
+            <Input
+              value={aboutHeadline}
+              onChange={(e) => setAboutHeadline(e.target.value)}
+              placeholder="Workspace riset yang dirancang dari konteks Indonesia."
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label className="text-xs">Bio / intro</Label>
+            <Textarea
+              value={aboutBody}
+              onChange={(e) => setAboutBody(e.target.value)}
+              rows={3}
+              placeholder="Ceritakan tentang produk atau timmu…"
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label className="text-xs">Foto</Label>
+            <div className="mt-1 flex items-center gap-3">
+              {aboutImageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={aboutImageUrl} alt="About" className="size-16 rounded-lg border border-border/60 object-cover" />
+              ) : (
+                <span className="text-xs text-muted-foreground">Belum ada foto.</span>
+              )}
+              <ImagePickerButton
+                label={aboutImageUrl ? "Ganti foto" : "Upload foto"}
+                title="Foto About"
+                onUpload={onUpload}
+                searchUnsplash={undefined}
+                onChange={(img) => setAboutImageUrl(imageRef(img) ?? "")}
+              />
+              {aboutImageUrl && (
+                <Button type="button" variant="ghost" size="sm" onClick={() => setAboutImageUrl("")}>
+                  Hapus
+                </Button>
+              )}
             </div>
           </div>
           <div className="flex justify-end">
