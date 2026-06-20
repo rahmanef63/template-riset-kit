@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { useMutation } from "convex/react";
+import { toast } from "sonner";
+import { IS_DEMO } from "@/lib/stage";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { pagesReducer } from "@/features/_shared/pages/reducer";
@@ -66,6 +68,7 @@ export function useConvexDispatch(state: State): (a: Action) => void {
 
   return React.useCallback(
     (action: Action) => {
+      if (IS_DEMO) { toast.info("Mode demo — clone template untuk menyimpan perubahan"); return; }
       const fail = (e: unknown) => console.error(`[store] ${action.type} failed`, e);
       switch (action.type) {
         case "doc.upsert": {
