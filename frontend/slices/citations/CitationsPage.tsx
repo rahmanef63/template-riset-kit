@@ -9,7 +9,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { SectionHead } from "@/features/_shared/ui/section-head";
 import { fmtDate, useCitations } from "@/features/_app/store";
-import { SEED_PUBLIC_CITATIONS_EXTRA } from "@/features/_app/publications-seed";
 import type { CitationStyle } from "@/features/_app/types";
 
 type Row = {
@@ -30,27 +29,21 @@ function copyText(value: string, label: string) {
 }
 
 export function CitationsPage() {
-  const workspaceCitations = useCitations();
+  const citations = useCitations();
 
-  const rows: Row[] = React.useMemo(() => {
-    const fromWorkspace: Row[] = workspaceCitations.map((c) => ({
-      id: c.id,
-      style: c.style,
-      rendered: c.rendered,
-      bibKey: c.bibKey,
-      addedAt: c.addedAt,
-    }));
-    // Merge with extra public citations (deduped by bibKey).
-    const seen = new Set(fromWorkspace.map((r) => r.bibKey));
-    const extra: Row[] = SEED_PUBLIC_CITATIONS_EXTRA.filter((r) => !seen.has(r.bibKey)).map((r) => ({
-      id: r.id,
-      style: r.style,
-      rendered: r.rendered,
-      bibKey: r.bibKey,
-      addedAt: r.addedAt,
-    }));
-    return [...fromWorkspace, ...extra].sort((a, b) => b.addedAt - a.addedAt);
-  }, [workspaceCitations]);
+  const rows: Row[] = React.useMemo(
+    () =>
+      citations
+        .map((c) => ({
+          id: c.id,
+          style: c.style,
+          rendered: c.rendered,
+          bibKey: c.bibKey,
+          addedAt: c.addedAt,
+        }))
+        .sort((a, b) => b.addedAt - a.addedAt),
+    [citations],
+  );
 
   const [q, setQ] = React.useState("");
   const [style, setStyle] = React.useState<CitationStyle | "All">("All");

@@ -107,6 +107,23 @@ export type Insight = {
   status: PublishStatus;
 };
 
+/** About-page principle — single editable bullet. */
+export type AboutPrinciple = {
+  id: string;
+  text: string;
+  order: number;
+  status: PublishStatus;
+};
+
+/** About-page timeline entry. */
+export type AboutTimelineItem = {
+  id: string;
+  year: string;
+  milestone: string;
+  order: number;
+  status: PublishStatus;
+};
+
 /** Research project — long-running line of inquiry. */
 export type ProjectStatus = "exploring" | "active" | "writing" | "submitted" | "archived";
 export type Project = {
@@ -162,6 +179,8 @@ export type State = {
   publications: Publication[];
   insights: Insight[];
   readingList: PublicReadingItem[];
+  aboutPrinciples: AboutPrinciple[];
+  aboutTimeline: AboutTimelineItem[];
   /** O-wave: public pages CRUD slice. */
   pages: import("@/features/_shared/pages/types").PageEntry[];
   /** AB-wave: home-page section composition. Ordered + toggleable. */
@@ -198,5 +217,9 @@ export type Action =
   | { type: "insight.delete"; id: string }
   | { type: "reading.upsert"; reading: PublicReadingItem }
   | { type: "reading.delete"; id: string }
+  | { type: "aboutPrinciple.upsert"; principle: AboutPrinciple }
+  | { type: "aboutPrinciple.delete"; id: string }
+  | { type: "aboutTimeline.upsert"; item: AboutTimelineItem }
+  | { type: "aboutTimeline.delete"; id: string }
   | { type: "hydrate"; state: State }
   | { type: "reset" };

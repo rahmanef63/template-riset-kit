@@ -205,6 +205,25 @@ export default defineSchema({
     ts: v.number(),
   }).index("by_email", ["email"]),
 
+  // About-page principles — dashboard-editable list (mirrors risetReadingList).
+  risetAboutPrinciples: defineTable({
+    text: v.string(),
+    order: v.number(),
+    status: v.union(v.literal("draft"), v.literal("published")),
+  })
+    .index("by_order", ["order"])
+    .index("by_status", ["status"]),
+
+  // About-page timeline — dashboard-editable list (mirrors risetReadingList).
+  risetAboutTimeline: defineTable({
+    year: v.string(),
+    milestone: v.string(),
+    order: v.number(),
+    status: v.union(v.literal("draft"), v.literal("published")),
+  })
+    .index("by_order", ["order"])
+    .index("by_status", ["status"]),
+
   // Page-builder + landing: complex nested structures stored as blobs keyed by
   // the frontend's string id (PageEntry.id / LandingSection.id).
   pages: defineTable({

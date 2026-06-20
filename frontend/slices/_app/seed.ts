@@ -183,6 +183,8 @@ export const SEED_STATE: State = {
   publications: [],
   insights: [],
   readingList: [],
+  aboutPrinciples: [],
+  aboutTimeline: [],
   pages: SEED_PAGES,
   landingSections: SEED_LANDING_SECTIONS,
 };

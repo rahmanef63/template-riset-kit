@@ -9,6 +9,8 @@
  */
 
 import type * as _shared_auth from "../_shared/auth.js";
+import type * as aboutPrinciples from "../aboutPrinciples.js";
+import type * as aboutTimeline from "../aboutTimeline.js";
 import type * as aiSessions from "../aiSessions.js";
 import type * as auth from "../auth.js";
 import type * as backup from "../backup.js";
@@ -49,6 +51,8 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   "_shared/auth": typeof _shared_auth;
+  aboutPrinciples: typeof aboutPrinciples;
+  aboutTimeline: typeof aboutTimeline;
   aiSessions: typeof aiSessions;
   auth: typeof auth;
   backup: typeof backup;

@@ -42,12 +42,15 @@ function Provider({ children }: { children: React.ReactNode }) {
   const publications = useQuery(api.publications.listAll, {});
   const insights = useQuery(api.insights.listAll, {});
   const readingList = useQuery(api.readingList.listAll, {});
+  const aboutPrinciples = useQuery(api.aboutPrinciples.listAll, {});
+  const aboutTimeline = useQuery(api.aboutTimeline.listAll, {});
   const pageRows = useQuery(api.pages.list, {});
   const landingRows = useQuery(api.landing.list, {});
 
   const queries = [
     documents, notes, citations, litReviews, aiSessions,
     projects, datasets, collaborators, publications, insights, readingList,
+    aboutPrinciples, aboutTimeline,
     pageRows, landingRows,
   ];
   const ready = queries.every((q) => q !== undefined);
@@ -66,10 +69,12 @@ function Provider({ children }: { children: React.ReactNode }) {
       publications: withId(publications),
       insights: withId(insights),
       readingList: withId(readingList),
+      aboutPrinciples: withId(aboutPrinciples),
+      aboutTimeline: withId(aboutTimeline),
       pages: (pageRows ?? []) as PageEntry[],
       landingSections: (landingRows ?? []) as LandingSection[],
     }),
-    [documents, notes, citations, litReviews, aiSessions, projects, datasets, collaborators, publications, insights, readingList, pageRows, landingRows],
+    [documents, notes, citations, litReviews, aiSessions, projects, datasets, collaborators, publications, insights, readingList, aboutPrinciples, aboutTimeline, pageRows, landingRows],
   );
 
   const dispatch = useConvexDispatch(state);
@@ -183,6 +188,12 @@ export function useInsight(slug: string) {
 }
 export function useReadingList() {
   return useStore().state.readingList;
+}
+export function useAboutPrinciples() {
+  return useStore().state.aboutPrinciples;
+}
+export function useAboutTimeline() {
+  return useStore().state.aboutTimeline;
 }
 
 export { nid, slugify, fmtDate, rel } from "@/features/_shared/utils";

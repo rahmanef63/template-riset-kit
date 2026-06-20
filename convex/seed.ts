@@ -30,6 +30,29 @@ const CITATIONS = [
   { docId: "doc-1", style: "APA" as const, rendered: "Pratama, A., Sari, R., & Wijaya, B. (2024). Lorem ipsum: A meta-analysis of cognitive load patterns. Journal of Cognitive Studies, 12(3), 88-104.", bibKey: "pratama2024", addedAt: day(2) },
   { docId: "doc-2", style: "BibTeX" as const, rendered: "@article{hartono2023, author={Hartono, L. and Setiawan, B.}, title={Ipsum doloremque: Riset etnografi UMKM Indonesia}, year={2023}, journal={Indonesian Ethnography Review}}", bibKey: "hartono2023", addedAt: day(7) },
   { docId: "doc-3", style: "Chicago" as const, rendered: "Maharani, Putri, and Asep Wijaya. \"Sit amet: Tinjauan kebijakan transportasi publik Jakarta.\" Jakarta Policy Journal 8, no. 2 (2025): 14-29.", bibKey: "maharani2025", addedAt: day(1) },
+  // Extra public citations (formerly SEED_PUBLIC_CITATIONS_EXTRA, hardcoded in
+  // CitationsPage). Now seeded into the table so the public directory + admin
+  // CRUD share one source of truth.
+  { docId: "", style: "APA" as const, rendered: "Nugroho, D., Lestari, M., & Ramadhan, F. (2026). Consectetur: Evaluasi LLM untuk parafrase teks akademik bahasa Indonesia. arXiv:2601.04421.", bibKey: "nugroho2026", addedAt: day(2) },
+  { docId: "", style: "IEEE" as const, rendered: "H. Wibowo and R. Putri, \"Adipiscing elit: Sistem rekomendasi sitasi berbasis graph attention,\" in Proc. ICIC, 2024, pp. 1102-1109.", bibKey: "wibowo2024", addedAt: day(5) },
+  { docId: "", style: "BibTeX" as const, rendered: "@techreport{openscience2025, author={Tim Kebijakan Sains Terbuka}, title={Pemetaan ekosistem riset terbuka di kampus Indonesia}, institution={Riset Kit}, year={2025}, number={Policy Brief 03}}", bibKey: "openscience2025", addedAt: day(11) },
+];
+
+// About-page principles — formerly hardcoded PRINCIPLES in AboutPage.tsx.
+const ABOUT_PRINCIPLES = [
+  { text: "Privasi-first — dokumen diproses di workspace pribadi.", order: 10, status: "published" as const },
+  { text: "EYD-aware — AI ngerti tata bahasa akademik Indonesia.", order: 20, status: "published" as const },
+  { text: "Citation-correct — APA, MLA, Chicago, IEEE, BibTeX.", order: 30, status: "published" as const },
+  { text: "Methodology-aware — review logika metode otomatis.", order: 40, status: "published" as const },
+  { text: "Source-of-truth — setiap klaim selalu balik ke dokumen asli.", order: 50, status: "published" as const },
+  { text: "Open formats — export ke .docx, .tex, .md, .bib.", order: 60, status: "published" as const },
+];
+
+// About-page timeline — formerly hardcoded TIMELINE in AboutPage.tsx.
+const ABOUT_TIMELINE = [
+  { year: "2026", milestone: "Riset Kit launch — workspace untuk peneliti Indonesia.", order: 10, status: "published" as const },
+  { year: "2025", milestone: "Beta tertutup di 3 universitas — feedback dari 40+ peneliti.", order: 20, status: "published" as const },
+  { year: "2024", milestone: "Prototype AI Reader — validasi konsep dengan tesis S2.", order: 30, status: "published" as const },
 ];
 
 const LIT_REVIEWS = [
@@ -157,6 +180,8 @@ async function insertAll(ctx: any) {
   for (const p of PUBLICATIONS) await ctx.db.insert("risetPublications", p);
   for (const i of INSIGHTS) await ctx.db.insert("risetInsights", i);
   for (const r of READING_LIST) await ctx.db.insert("risetReadingList", r);
+  for (const p of ABOUT_PRINCIPLES) await ctx.db.insert("risetAboutPrinciples", p);
+  for (const t of ABOUT_TIMELINE) await ctx.db.insert("risetAboutTimeline", t);
   for (const s of LANDING) await ctx.db.insert("landingSections", { sectionId: s.id, data: s });
   for (const p of PAGES) await ctx.db.insert("pages", { entryId: p.id, slug: p.slug, data: p });
 
@@ -172,6 +197,8 @@ async function insertAll(ctx: any) {
     publications: PUBLICATIONS.length,
     insights: INSIGHTS.length,
     readingList: READING_LIST.length,
+    aboutPrinciples: ABOUT_PRINCIPLES.length,
+    aboutTimeline: ABOUT_TIMELINE.length,
     landing: LANDING.length,
     pages: PAGES.length,
   };
@@ -189,6 +216,8 @@ const CONTENT_TABLES = [
   "risetPublications",
   "risetInsights",
   "risetReadingList",
+  "risetAboutPrinciples",
+  "risetAboutTimeline",
   "landingSections",
   "pages",
 ] as const;

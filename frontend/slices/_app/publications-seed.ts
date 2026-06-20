@@ -1,11 +1,8 @@
-// Riset Kit — public publications + extra public citations seed.
+// Riset Kit — public publications seed.
 // Split from shared/seed.ts so per-template seed.ts stays focused on
 // workspace state, and to stay under the 200 LOC cap.
 
 import type { Publication } from "./types";
-
-const now = Date.now();
-const day = (n: number) => now - n * 24 * 60 * 60 * 1000;
 
 export const SEED_PUBLICATIONS: Publication[] = [
   {
@@ -101,35 +98,5 @@ export const SEED_PUBLICATIONS: Publication[] = [
       "Survei 64 kampus tentang kebijakan repositori institusional, preprint, dan data sharing. Hanya 18% punya policy formal; 51% bergantung pada inisiatif individual dosen.",
     keywords: ["open science", "kebijakan", "repositori", "data sharing"],
     status: "published",
-  },
-];
-
-/** Extra public citations (selain SEED_CITATIONS workspace) — ditampilkan
- *  di CitationsPage publik supaya direktori tidak kelihatan kosong saat
- *  workspace store masih default-fresh. */
-export const SEED_PUBLIC_CITATIONS_EXTRA = [
-  {
-    id: "pcit-1",
-    bibKey: "nugroho2026",
-    style: "APA" as const,
-    rendered:
-      "Nugroho, D., Lestari, M., & Ramadhan, F. (2026). Consectetur: Evaluasi LLM untuk parafrase teks akademik bahasa Indonesia. arXiv:2601.04421.",
-    addedAt: day(2),
-  },
-  {
-    id: "pcit-2",
-    bibKey: "wibowo2024",
-    style: "IEEE" as const,
-    rendered:
-      "H. Wibowo and R. Putri, \"Adipiscing elit: Sistem rekomendasi sitasi berbasis graph attention,\" in Proc. ICIC, 2024, pp. 1102-1109.",
-    addedAt: day(5),
-  },
-  {
-    id: "pcit-3",
-    bibKey: "openscience2025",
-    style: "BibTeX" as const,
-    rendered:
-      "@techreport{openscience2025, author={Tim Kebijakan Sains Terbuka}, title={Pemetaan ekosistem riset terbuka di kampus Indonesia}, institution={Riset Kit}, year={2025}, number={Policy Brief 03}}",
-    addedAt: day(11),
   },
 ];

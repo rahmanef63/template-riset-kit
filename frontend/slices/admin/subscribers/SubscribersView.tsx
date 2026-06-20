@@ -1,10 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { useQuery } from "convex/react";
-import { Mail } from "lucide-react";
+import { useMutation, useQuery } from "convex/react";
+import { Ban, Download, Mail, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { api } from "@/convex/_generated/api";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { rel } from "@/features/_app/store";
@@ -17,6 +19,8 @@ const STATUS_TONE: Record<string, string> = {
 
 export function SubscribersView() {
   const subscribers = useQuery(api.subscribers.list, {});
+  const setStatus = useMutation(api.subscribers.setStatus);
+  const remove = useMutation(api.subscribers.remove);
   const [q, setQ] = React.useState("");
 
   const filtered = React.useMemo(() => {
@@ -25,6 +29,25 @@ export function SubscribersView() {
     if (!needle) return rows;
     return rows.filter((s) => s.email.toLowerCase().includes(needle));
   }, [subscribers, q]);
+
+  function exportCsv() {
+    const rows = subscribers ?? [];
+    if (rows.length === 0) {
+      toast.error("Belum ada pelanggan untuk diekspor.");
+      return;
+    }
+    const header = "email,status,source,joined_at";
+    const body = rows
+      .map((s) => `${s.email},${s.status},${s.source},${new Date(s.ts).toISOString()}`)
+      .join("\n");
+    const blob = new Blob([`${header}\n${body}`], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "subscribers.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <div className="space-y-4">
@@ -35,12 +58,17 @@ export function SubscribersView() {
             {(subscribers ?? []).length} pelanggan newsletter
           </p>
         </div>
-        <Input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="Cari email..."
-          className="h-9 w-56"
-        />
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="gap-1" onClick={exportCsv}>
+            <Download className="size-3.5" /> Export CSV
+          </Button>
+          <Input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="Cari email..."
+            className="h-9 w-56"
+          />
+        </div>
       </div>
 
       <Card className="border-border/60">
@@ -60,6 +88,7 @@ export function SubscribersView() {
                     <th className="px-4 py-3 text-left">Status</th>
                     <th className="px-4 py-3 text-left">Sumber</th>
                     <th className="px-4 py-3 text-left">Bergabung</th>
+                    <th className="px-4 py-3 text-right">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/60">
@@ -78,6 +107,37 @@ export function SubscribersView() {
                       </td>
                       <td className="px-4 py-3 text-[11px] text-muted-foreground">{s.source}</td>
                       <td className="px-4 py-3 text-[11px] text-muted-foreground">{rel(s.ts)}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-end gap-1">
+                          {s.status !== "unsubscribed" && (
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="h-7 gap-1 text-[11px] text-amber-400"
+                              onClick={() => {
+                                setStatus({ id: s._id, status: "unsubscribed" })
+                                  .then(() => toast.success("Ditandai unsubscribe"))
+                                  .catch(() => toast.error("Gagal mengubah status"));
+                              }}
+                            >
+                              <Ban className="size-3.5" /> Unsubscribe
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-7"
+                            onClick={() => {
+                              if (!confirm(`Hapus pelanggan "${s.email}"?`)) return;
+                              remove({ id: s._id })
+                                .then(() => toast.success("Pelanggan dihapus"))
+                                .catch(() => toast.error("Gagal menghapus"));
+                            }}
+                          >
+                            <Trash2 className="size-3.5 text-rose-400" />
+                          </Button>
+                        </div>
+                      </td>
                     </tr>
                   ))}
                 </tbody>

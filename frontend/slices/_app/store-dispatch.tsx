@@ -36,6 +36,10 @@ export function useConvexDispatch(state: State): (a: Action) => void {
   const mInsightRemove = useMutation(api.insights.remove);
   const mReadingUpsert = useMutation(api.readingList.upsert);
   const mReadingRemove = useMutation(api.readingList.remove);
+  const mPrincipleUpsert = useMutation(api.aboutPrinciples.upsert);
+  const mPrincipleRemove = useMutation(api.aboutPrinciples.remove);
+  const mTimelineUpsert = useMutation(api.aboutTimeline.upsert);
+  const mTimelineRemove = useMutation(api.aboutTimeline.remove);
   const mPageUpsert = useMutation(api.pages.upsert);
   const mPageRemove = useMutation(api.pages.remove);
   const mLandingUpsert = useMutation(api.landing.upsert);
@@ -54,6 +58,8 @@ export function useConvexDispatch(state: State): (a: Action) => void {
       publications: new Set(state.publications.map((p) => p.id)),
       insights: new Set(state.insights.map((i) => i.id)),
       readingList: new Set(state.readingList.map((r) => r.id)),
+      aboutPrinciples: new Set(state.aboutPrinciples.map((p) => p.id)),
+      aboutTimeline: new Set(state.aboutTimeline.map((t) => t.id)),
     }),
     [state],
   );
@@ -198,6 +204,30 @@ export function useConvexDispatch(state: State): (a: Action) => void {
         }
         case "reading.delete":
           void mReadingRemove({ id: action.id as Id<"risetReadingList"> }).catch(fail);
+          break;
+
+        case "aboutPrinciple.upsert": {
+          const { id, ...d } = action.principle;
+          void (knownIds.aboutPrinciples.has(id)
+            ? mPrincipleUpsert({ id: id as Id<"risetAboutPrinciples">, ...d })
+            : mPrincipleUpsert(d)
+          ).catch(fail);
+          break;
+        }
+        case "aboutPrinciple.delete":
+          void mPrincipleRemove({ id: action.id as Id<"risetAboutPrinciples"> }).catch(fail);
+          break;
+
+        case "aboutTimeline.upsert": {
+          const { id, ...d } = action.item;
+          void (knownIds.aboutTimeline.has(id)
+            ? mTimelineUpsert({ id: id as Id<"risetAboutTimeline">, ...d })
+            : mTimelineUpsert(d)
+          ).catch(fail);
+          break;
+        }
+        case "aboutTimeline.delete":
+          void mTimelineRemove({ id: action.id as Id<"risetAboutTimeline"> }).catch(fail);
           break;
 
         case "PAGE_DELETE":
