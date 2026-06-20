@@ -15,59 +15,87 @@ import { parseConfigObject } from "./sections/config";
 // => the public renderer keeps the template defaults.
 
 type ItemField = { k: string; label: string; type?: "text" | "textarea" | "number" | "switch" | "lines" };
-type KindSchema = { key: string; singular: string; fields: ItemField[] };
+// A repeater block targets one array key on the config. `fields` => array of
+// objects (features/faq/…); `string` => array of plain strings edited as a
+// single field per row (stats.clients, custom.body).
+type Repeater =
+  | { key: string; singular: string; fields: ItemField[]; string?: never }
+  | { key: string; singular: string; string: { label: string; type?: "text" | "textarea" }; fields?: never };
+type KindSchema = Repeater[];
 
 const KIND_SCHEMA: Record<string, KindSchema> = {
-  features: {
-    key: "items",
-    singular: "Feature",
-    fields: [
-      { k: "icon", label: "Icon (lucide name)" },
-      { k: "title", label: "Title" },
-      { k: "blurb", label: "Blurb", type: "textarea" },
-    ],
-  },
-  testimonials: {
-    key: "items",
-    singular: "Testimonial",
-    fields: [
-      { k: "quote", label: "Quote", type: "textarea" },
-      { k: "author", label: "Author" },
-      { k: "role", label: "Role" },
-      { k: "rating", label: "Rating (1-5)", type: "number" },
-    ],
-  },
-  faq: {
-    key: "items",
-    singular: "Q&A",
-    fields: [
-      { k: "q", label: "Question" },
-      { k: "a", label: "Answer", type: "textarea" },
-    ],
-  },
-  pricing: {
-    key: "tiers",
-    singular: "Tier",
-    fields: [
-      { k: "name", label: "Name" },
-      { k: "price", label: "Price" },
-      { k: "period", label: "Period (e.g. /bln)" },
-      { k: "features", label: "Features (one per line)", type: "lines" },
-      { k: "featured", label: "Featured", type: "switch" },
-      { k: "ctaLabel", label: "CTA label" },
-      { k: "ctaHref", label: "CTA href" },
-    ],
-  },
-  stats: {
-    key: "stats",
-    singular: "Stat",
-    fields: [
-      { k: "value", label: "Value (number)", type: "number" },
-      { k: "prefix", label: "Prefix" },
-      { k: "suffix", label: "Suffix" },
-      { k: "label", label: "Label" },
-    ],
-  },
+  features: [
+    {
+      key: "items",
+      singular: "Feature",
+      fields: [
+        { k: "icon", label: "Icon (lucide name)" },
+        { k: "title", label: "Title" },
+        { k: "blurb", label: "Blurb", type: "textarea" },
+      ],
+    },
+  ],
+  testimonials: [
+    {
+      key: "items",
+      singular: "Testimonial",
+      fields: [
+        { k: "quote", label: "Quote", type: "textarea" },
+        { k: "author", label: "Author" },
+        { k: "role", label: "Role" },
+        { k: "rating", label: "Rating (1-5)", type: "number" },
+      ],
+    },
+  ],
+  faq: [
+    {
+      key: "items",
+      singular: "Q&A",
+      fields: [
+        { k: "q", label: "Question" },
+        { k: "a", label: "Answer", type: "textarea" },
+      ],
+    },
+  ],
+  pricing: [
+    {
+      key: "tiers",
+      singular: "Tier",
+      fields: [
+        { k: "name", label: "Name" },
+        { k: "price", label: "Price" },
+        { k: "period", label: "Period (e.g. /bln)" },
+        { k: "features", label: "Features (one per line)", type: "lines" },
+        { k: "featured", label: "Featured", type: "switch" },
+        { k: "ctaLabel", label: "CTA label" },
+        { k: "ctaHref", label: "CTA href" },
+      ],
+    },
+  ],
+  stats: [
+    {
+      key: "stats",
+      singular: "Stat",
+      fields: [
+        { k: "value", label: "Value (number)", type: "number" },
+        { k: "prefix", label: "Prefix" },
+        { k: "suffix", label: "Suffix" },
+        { k: "label", label: "Label" },
+      ],
+    },
+    {
+      key: "clients",
+      singular: "Client",
+      string: { label: "Name (logo strip)" },
+    },
+  ],
+  custom: [
+    {
+      key: "body",
+      singular: "Paragraph",
+      string: { label: "Paragraph", type: "textarea" },
+    },
+  ],
 };
 
 type Row = Record<string, unknown>;
@@ -85,69 +113,17 @@ export function LandingConfigField({
   const schema = kind ? KIND_SCHEMA[kind] : undefined;
   const [showRaw, setShowRaw] = React.useState(false);
 
-  const rows: Row[] = schema && Array.isArray(obj[schema.key]) ? (obj[schema.key] as Row[]) : [];
-
-  function commitRows(next: Row[]) {
-    onChange(JSON.stringify({ ...obj, [schema!.key]: next }));
-  }
-  function setCell(i: number, k: string, v: unknown) {
-    commitRows(rows.map((r, idx) => (idx === i ? { ...r, [k]: v } : r)));
-  }
-  function addRow() {
-    commitRows([...rows, {}]);
-  }
-  function removeRow(i: number) {
-    commitRows(rows.filter((_, idx) => idx !== i));
-  }
-  function move(i: number, dir: -1 | 1) {
-    const j = i + dir;
-    if (j < 0 || j >= rows.length) return;
-    const next = [...rows];
-    [next[i], next[j]] = [next[j], next[i]];
-    commitRows(next);
-  }
-
   return (
     <div className="space-y-3">
       {schema ? (
-        <div className="space-y-2">
-          {rows.length === 0 && (
-            <p className="rounded-md border border-dashed border-border/60 px-3 py-4 text-center text-xs text-muted-foreground">
-              Belum ada {schema.singular.toLowerCase()} — situs pakai contoh bawaan template. Tambah baris untuk override.
-            </p>
-          )}
-          {rows.map((row, i) => (
-            <div key={i} className="space-y-2 rounded-md border border-border/60 bg-muted/30 p-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[11px] font-medium text-muted-foreground">
-                  {schema.singular} {i + 1}
-                </span>
-                <div className="flex items-center gap-1">
-                  <Button type="button" variant="ghost" size="icon" className="size-7" aria-label="Naik" onClick={() => move(i, -1)} disabled={i === 0}>
-                    <ChevronUp className="size-3.5" />
-                  </Button>
-                  <Button type="button" variant="ghost" size="icon" className="size-7" aria-label="Turun" onClick={() => move(i, 1)} disabled={i === rows.length - 1}>
-                    <ChevronDown className="size-3.5" />
-                  </Button>
-                  <Button type="button" variant="ghost" size="icon" className="size-7 text-destructive" aria-label="Hapus" onClick={() => removeRow(i)}>
-                    <Trash2 className="size-3.5" />
-                  </Button>
-                </div>
-              </div>
-              <div className="grid gap-2 sm:grid-cols-2">
-                {schema.fields.map((f) => (
-                  <div key={f.k} className={f.type === "textarea" || f.type === "lines" ? "sm:col-span-2" : ""}>
-                    <Label className="text-[10px] text-muted-foreground">{f.label}</Label>
-                    <RowCell field={f} value={row[f.k]} onChange={(v) => setCell(i, f.k, v)} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-          <Button type="button" variant="outline" size="sm" className="gap-1" onClick={addRow}>
-            <Plus className="size-3.5" /> Tambah {schema.singular.toLowerCase()}
-          </Button>
-        </div>
+        schema.map((rep) => (
+          <RepeaterBlock
+            key={rep.key}
+            repeater={rep}
+            rows={Array.isArray(obj[rep.key]) ? (obj[rep.key] as unknown[]) : []}
+            onCommit={(next) => onChange(JSON.stringify({ ...obj, [rep.key]: next }))}
+          />
+        ))
       ) : (
         <p className="text-[10px] text-muted-foreground">
           Section kind ini tidak punya editor terstruktur — pakai JSON di bawah.
@@ -171,6 +147,87 @@ export function LandingConfigField({
           placeholder='{ "items": [{ "q": "…", "a": "…" }] }'
         />
       )}
+    </div>
+  );
+}
+
+function RepeaterBlock({
+  repeater,
+  rows,
+  onCommit,
+}: {
+  repeater: Repeater;
+  rows: unknown[];
+  onCommit: (next: unknown[]) => void;
+}) {
+  const isString = Boolean(repeater.string);
+  const empty: unknown = isString ? "" : {};
+
+  function setCell(i: number, k: string, v: unknown) {
+    onCommit(rows.map((r, idx) => (idx === i ? { ...(r as Row), [k]: v } : r)));
+  }
+  function setString(i: number, v: unknown) {
+    onCommit(rows.map((r, idx) => (idx === i ? v : r)));
+  }
+  function addRow() {
+    onCommit([...rows, empty]);
+  }
+  function removeRow(i: number) {
+    onCommit(rows.filter((_, idx) => idx !== i));
+  }
+  function move(i: number, dir: -1 | 1) {
+    const j = i + dir;
+    if (j < 0 || j >= rows.length) return;
+    const next = [...rows];
+    [next[i], next[j]] = [next[j], next[i]];
+    onCommit(next);
+  }
+
+  return (
+    <div className="space-y-2">
+      {rows.length === 0 && (
+        <p className="rounded-md border border-dashed border-border/60 px-3 py-4 text-center text-xs text-muted-foreground">
+          Belum ada {repeater.singular.toLowerCase()} — situs pakai contoh bawaan template. Tambah baris untuk override.
+        </p>
+      )}
+      {rows.map((row, i) => (
+        <div key={i} className="space-y-2 rounded-md border border-border/60 bg-muted/30 p-3">
+          <div className="flex items-center justify-between">
+            <span className="text-[11px] font-medium text-muted-foreground">
+              {repeater.singular} {i + 1}
+            </span>
+            <div className="flex items-center gap-1">
+              <Button type="button" variant="ghost" size="icon" className="size-7" aria-label="Naik" onClick={() => move(i, -1)} disabled={i === 0}>
+                <ChevronUp className="size-3.5" />
+              </Button>
+              <Button type="button" variant="ghost" size="icon" className="size-7" aria-label="Turun" onClick={() => move(i, 1)} disabled={i === rows.length - 1}>
+                <ChevronDown className="size-3.5" />
+              </Button>
+              <Button type="button" variant="ghost" size="icon" className="size-7 text-destructive" aria-label="Hapus" onClick={() => removeRow(i)}>
+                <Trash2 className="size-3.5" />
+              </Button>
+            </div>
+          </div>
+          {repeater.string ? (
+            <div>
+              <Label className="text-[10px] text-muted-foreground">{repeater.string.label}</Label>
+              <RowCell field={{ k: "", label: repeater.string.label, type: repeater.string.type }} value={row} onChange={(v) => setString(i, v)} />
+            </div>
+          ) : (
+            <div className="grid gap-2 sm:grid-cols-2">
+              {repeater.fields.map((f) => (
+                <div key={f.k} className={f.type === "textarea" || f.type === "lines" ? "sm:col-span-2" : ""}>
+                  <Label className="text-[10px] text-muted-foreground">{f.label}</Label>
+                  <RowCell field={f} value={(row as Row)[f.k]} onChange={(v) => setCell(i, f.k, v)} />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" className="gap-1" onClick={addRow}>
+        <Plus className="size-3.5" /> Tambah {repeater.singular.toLowerCase()}
+      </Button>
     </div>
   );
 }
