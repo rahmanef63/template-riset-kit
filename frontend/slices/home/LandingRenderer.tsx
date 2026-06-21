@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Bot, FileText, Library, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -32,6 +33,7 @@ import {
   RESEARCH_TESTIMONIALS,
   RESEARCH_TIERS,
 } from "./LandingExtras";
+import { HERO_IMG } from "./home-data";
 
 interface Deps {
   documents: Document[];
@@ -57,8 +59,17 @@ export function renderLanding(section: LandingSection, deps: Deps) {
     case "hero":
       return (
         <LandingSectionShell section={section}>
+          {/* Hero image reads as a full-bleed ambient BACKGROUND (not a
+              foreground card). `section.imageUrl` still feeds HeroBlock's
+              optional right-column illustration when an admin sets one. */}
+          {!section.imageUrl && (
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+              <Image src={HERO_IMG} alt="" fill priority sizes="100vw" className="object-cover opacity-30" />
+              <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/85 to-background" />
+            </div>
+          )}
           <HeroBlock
-            glow
+            glow={Boolean(section.imageUrl)}
             badge={parseConfigBadge(section.config) ?? "Untuk peneliti, mahasiswa S2/S3, think-tank"}
             title={section.title}
             subtitle={section.subtitle}

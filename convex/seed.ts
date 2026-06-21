@@ -134,7 +134,7 @@ const READING_LIST = [
 // SEED_LANDING_SECTIONS. `syncLanding` below pushes additions/order to an
 // already-seeded deployment without touching admin-edited copy.
 const LANDING = [
-  { id: "ls-hero", order: 10, kind: "hero", title: "Riset workspace yang paham bahasa akademik Indonesia.", subtitle: "Baca PDF, review literatur, dan draft tesis — semua dalam satu workspace dengan AI yang ngerti EYD dan metodologi riset.", enabled: true, imageUrl: "/hero.webp", config: '{"badge":"Untuk peneliti, mahasiswa S2/S3, think-tank"}' },
+  { id: "ls-hero", order: 10, kind: "hero", title: "Riset workspace yang paham bahasa akademik Indonesia.", subtitle: "Baca PDF, review literatur, dan draft tesis — semua dalam satu workspace dengan AI yang ngerti EYD dan metodologi riset.", enabled: true, config: '{"badge":"Untuk peneliti, mahasiswa S2/S3, think-tank"}' },
   { id: "ls-stats", order: 20, kind: "stats", title: "Jejak riset yang bisa diverifikasi", subtitle: "Publikasi, sitasi, dataset terbuka, dan kolaborator — angka berjalan dari workspace ini.", enabled: true },
   { id: "ls-features", order: 30, kind: "features", title: "Semua yang dibutuhkan dalam siklus riset", subtitle: "Dari upload paper sampai draft bab — satu workspace, AI di setiap titik.", enabled: true },
   { id: "ls-portfolio", order: 40, kind: "portfolio", title: "Sintesis literatur jadi mudah", subtitle: "Matrix bandingkan metode, temuan, dan gap antar paper otomatis.", enabled: true },
@@ -241,8 +241,9 @@ export const run = mutation({
 
 // Demo/CLI seed (NO auth, internal — run via `npx convex run seed:seedDemo`).
 // For SHOWCASE/demo deployments only. Refills the content tables for a full
-// demo and ensures the hero landing image, WITHOUT wiping admin-edited landing
-// copy (landingSections + pages are left untouched). Idempotent.
+// demo, WITHOUT wiping admin-edited landing copy (landingSections + pages are
+// only seeded when still empty). The hero image is a full-bleed background
+// (frontend HERO_IMG), not a seeded foreground imageUrl. Idempotent.
 export const seedDemo = internalMutation({
   args: {},
   handler: async (ctx) => {
@@ -254,22 +255,12 @@ export const seedDemo = internalMutation({
       for (const row of await ctx.db.query(t).take(1000)) await ctx.db.delete(row._id);
     }
     const counts = await insertAll(ctx, { landing: false });
-    const hero = await ctx.db
-      .query("landingSections")
-      .withIndex("by_sectionId", (q) => q.eq("sectionId", "ls-hero"))
-      .unique();
-    let heroImage = false;
-    if (hero) {
-      const d = hero.data as Record<string, unknown>;
-      if (!d.imageUrl) {
-        await ctx.db.patch(hero._id, { data: { ...d, imageUrl: "/hero.webp" } });
-        heroImage = true;
-      }
-    } else {
+    // Seed landing only if the table is empty (preserve admin-edited copy).
+    const hasLanding = await ctx.db.query("landingSections").first();
+    if (!hasLanding) {
       for (const s of LANDING) await ctx.db.insert("landingSections", { sectionId: s.id, data: s });
-      heroImage = true;
     }
-    return { ...counts, heroImage };
+    return counts;
   },
 });
 
