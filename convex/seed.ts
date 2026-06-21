@@ -1,4 +1,4 @@
-import { mutation } from "./_generated/server";
+import { mutation, internalMutation } from "./_generated/server";
 import { ConvexError } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { requireUser } from "./_shared/auth";
@@ -134,7 +134,7 @@ const READING_LIST = [
 // SEED_LANDING_SECTIONS. `syncLanding` below pushes additions/order to an
 // already-seeded deployment without touching admin-edited copy.
 const LANDING = [
-  { id: "ls-hero", order: 10, kind: "hero", title: "Riset workspace yang paham bahasa akademik Indonesia.", subtitle: "Baca PDF, review literatur, dan draft tesis — semua dalam satu workspace dengan AI yang ngerti EYD dan metodologi riset.", enabled: true, config: '{"badge":"Untuk peneliti, mahasiswa S2/S3, think-tank"}' },
+  { id: "ls-hero", order: 10, kind: "hero", title: "Riset workspace yang paham bahasa akademik Indonesia.", subtitle: "Baca PDF, review literatur, dan draft tesis — semua dalam satu workspace dengan AI yang ngerti EYD dan metodologi riset.", enabled: true, imageUrl: "/hero.webp", config: '{"badge":"Untuk peneliti, mahasiswa S2/S3, think-tank"}' },
   { id: "ls-stats", order: 20, kind: "stats", title: "Jejak riset yang bisa diverifikasi", subtitle: "Publikasi, sitasi, dataset terbuka, dan kolaborator — angka berjalan dari workspace ini.", enabled: true },
   { id: "ls-features", order: 30, kind: "features", title: "Semua yang dibutuhkan dalam siklus riset", subtitle: "Dari upload paper sampai draft bab — satu workspace, AI di setiap titik.", enabled: true },
   { id: "ls-portfolio", order: 40, kind: "portfolio", title: "Sintesis literatur jadi mudah", subtitle: "Matrix bandingkan metode, temuan, dan gap antar paper otomatis.", enabled: true },
@@ -168,7 +168,9 @@ const PAGES = [
 ];
 
 // All demo content inserts (no wipe). Shared by `run` and `seedSample`.
-async function insertAll(ctx: any) {
+// `opts.landing === false` skips the landing/home tables (landingSections + pages)
+// so a content-only refill (seedDemo) never wipes admin-edited landing copy.
+async function insertAll(ctx: any, opts: { landing?: boolean } = {}) {
   for (const d of DOCUMENTS) await ctx.db.insert("risetDocuments", d);
   for (const n of NOTES) await ctx.db.insert("risetNotes", n);
   for (const c of CITATIONS) await ctx.db.insert("risetCitations", c);
@@ -182,8 +184,10 @@ async function insertAll(ctx: any) {
   for (const r of READING_LIST) await ctx.db.insert("risetReadingList", r);
   for (const p of ABOUT_PRINCIPLES) await ctx.db.insert("risetAboutPrinciples", p);
   for (const t of ABOUT_TIMELINE) await ctx.db.insert("risetAboutTimeline", t);
-  for (const s of LANDING) await ctx.db.insert("landingSections", { sectionId: s.id, data: s });
-  for (const p of PAGES) await ctx.db.insert("pages", { entryId: p.id, slug: p.slug, data: p });
+  if (opts.landing !== false) {
+    for (const s of LANDING) await ctx.db.insert("landingSections", { sectionId: s.id, data: s });
+    for (const p of PAGES) await ctx.db.insert("pages", { entryId: p.id, slug: p.slug, data: p });
+  }
 
   return {
     documents: DOCUMENTS.length,
@@ -232,6 +236,40 @@ export const run = mutation({
       for (const row of await ctx.db.query(t).take(1000)) await ctx.db.delete(row._id);
     }
     return insertAll(ctx);
+  },
+});
+
+// Demo/CLI seed (NO auth, internal — run via `npx convex run seed:seedDemo`).
+// For SHOWCASE/demo deployments only. Refills the content tables for a full
+// demo and ensures the hero landing image, WITHOUT wiping admin-edited landing
+// copy (landingSections + pages are left untouched). Idempotent.
+export const seedDemo = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    // Content tables only — never landingSections / pages (the landing/home copy).
+    const CONTENT_ONLY = CONTENT_TABLES.filter(
+      (t) => t !== "landingSections" && t !== "pages",
+    );
+    for (const t of CONTENT_ONLY) {
+      for (const row of await ctx.db.query(t).take(1000)) await ctx.db.delete(row._id);
+    }
+    const counts = await insertAll(ctx, { landing: false });
+    const hero = await ctx.db
+      .query("landingSections")
+      .withIndex("by_sectionId", (q) => q.eq("sectionId", "ls-hero"))
+      .unique();
+    let heroImage = false;
+    if (hero) {
+      const d = hero.data as Record<string, unknown>;
+      if (!d.imageUrl) {
+        await ctx.db.patch(hero._id, { data: { ...d, imageUrl: "/hero.webp" } });
+        heroImage = true;
+      }
+    } else {
+      for (const s of LANDING) await ctx.db.insert("landingSections", { sectionId: s.id, data: s });
+      heroImage = true;
+    }
+    return { ...counts, heroImage };
   },
 });
 
