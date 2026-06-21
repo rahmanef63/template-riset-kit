@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { Bot, FileText, Library, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -11,6 +10,7 @@ import {
   type FeatureItem,
 } from "@/features/_shared";
 import { LandingSectionShell } from "@/features/_shared/landing/LandingSectionShell";
+import { HeroLayers } from "@/features/_shared/landing/HeroLayers";
 import { Stagger } from "@/features/_shared/motion";
 import { parseConfigBadge } from "@/features/_shared/landing/parse-config";
 import {
@@ -59,12 +59,20 @@ export function renderLanding(section: LandingSection, deps: Deps) {
     case "hero":
       return (
         <LandingSectionShell section={section}>
-          {/* Hero image reads as a full-bleed ambient BACKGROUND (not a
-              foreground card). `section.imageUrl` still feeds HeroBlock's
-              optional right-column illustration when an admin sets one. */}
-          {!section.imageUrl && (
-            <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-              <Image src={HERO_IMG} alt="" fill priority sizes="100vw" className="object-cover opacity-30" />
+          {/* Admin-composed background layers (images + HTML/CSS, each with
+              opacity + on/off). Empty => HERO_IMG fallback so existing heroes
+              look unchanged. When an admin sets a foreground `imageUrl` card
+              the ambient background is suppressed (no fallbackImg), mirroring
+              the previous behavior. */}
+          <HeroLayers
+            placement="background"
+            layers={section.layers}
+            fallbackImg={section.imageUrl ? undefined : HERO_IMG}
+          />
+          {/* Readability scrim — opt-in via the `shade` toggle so the hero
+              image shows in full real color by default. */}
+          {section.shade && (
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
               <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/85 to-background" />
             </div>
           )}
@@ -77,6 +85,8 @@ export function renderLanding(section: LandingSection, deps: Deps) {
             secondaryCta={{ label: "Lihat library publik", href: `${PUBLIC_BASE}/library` }}
             image={section.imageUrl ? { url: section.imageUrl, ratio: section.imageRatio } : undefined}
           />
+          {/* Foreground layers — above content, click-through. */}
+          <HeroLayers placement="foreground" layers={section.layers} />
         </LandingSectionShell>
       );
 

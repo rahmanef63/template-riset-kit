@@ -15,6 +15,9 @@ export const SEED_LANDING_SECTIONS: LandingSection[] = [
       "Baca PDF, review literatur, dan draft tesis — semua dalam satu workspace dengan AI yang ngerti EYD dan metodologi riset.",
     enabled: true,
     config: '{"badge":"Untuk peneliti, mahasiswa S2/S3, think-tank"}',
+    layers: [
+      { id: "hero-photo", type: "image", placement: "background", opacity: 100, enabled: true, url: "/hero.webp" },
+    ],
   },
   {
     id: "ls-stats",

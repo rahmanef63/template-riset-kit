@@ -134,7 +134,7 @@ const READING_LIST = [
 // SEED_LANDING_SECTIONS. `syncLanding` below pushes additions/order to an
 // already-seeded deployment without touching admin-edited copy.
 const LANDING = [
-  { id: "ls-hero", order: 10, kind: "hero", title: "Riset workspace yang paham bahasa akademik Indonesia.", subtitle: "Baca PDF, review literatur, dan draft tesis — semua dalam satu workspace dengan AI yang ngerti EYD dan metodologi riset.", enabled: true, config: '{"badge":"Untuk peneliti, mahasiswa S2/S3, think-tank"}' },
+  { id: "ls-hero", order: 10, kind: "hero", title: "Riset workspace yang paham bahasa akademik Indonesia.", subtitle: "Baca PDF, review literatur, dan draft tesis — semua dalam satu workspace dengan AI yang ngerti EYD dan metodologi riset.", enabled: true, config: '{"badge":"Untuk peneliti, mahasiswa S2/S3, think-tank"}', layers: [{ id: "hero-photo", type: "image", placement: "background", opacity: 100, enabled: true, url: "/hero.webp" }] },
   { id: "ls-stats", order: 20, kind: "stats", title: "Jejak riset yang bisa diverifikasi", subtitle: "Publikasi, sitasi, dataset terbuka, dan kolaborator — angka berjalan dari workspace ini.", enabled: true },
   { id: "ls-features", order: 30, kind: "features", title: "Semua yang dibutuhkan dalam siklus riset", subtitle: "Dari upload paper sampai draft bab — satu workspace, AI di setiap titik.", enabled: true },
   { id: "ls-portfolio", order: 40, kind: "portfolio", title: "Sintesis literatur jadi mudah", subtitle: "Matrix bandingkan metode, temuan, dan gap antar paper otomatis.", enabled: true },
