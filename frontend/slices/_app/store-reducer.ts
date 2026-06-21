@@ -18,7 +18,9 @@ export function reducer(state: State, action: Action): State {
     case "PAGE_CREATE":
     case "PAGE_UPDATE":
     case "PAGE_DELETE":
-    case "PAGE_REORDER_BLOCK": {
+    case "PAGE_REORDER_BLOCK":
+    case "PAGE_SECTION_UPSERT":
+    case "PAGE_SECTION_DELETE": {
       const next = pagesReducer({ pages: state.pages }, action);
       return { ...state, pages: next.pages };
     }
@@ -119,6 +121,61 @@ export function reducer(state: State, action: Action): State {
     }
     case "collaborator.delete":
       return { ...state, collaborators: state.collaborators.filter((c) => c.id !== action.id) };
+
+    case "publication.upsert": {
+      const idx = state.publications.findIndex((p) => p.id === action.publication.id);
+      const publications =
+        idx >= 0
+          ? state.publications.map((p) => (p.id === action.publication.id ? action.publication : p))
+          : [action.publication, ...state.publications];
+      return { ...state, publications };
+    }
+    case "publication.delete":
+      return { ...state, publications: state.publications.filter((p) => p.id !== action.id) };
+
+    case "insight.upsert": {
+      const idx = state.insights.findIndex((i) => i.id === action.insight.id);
+      const insights =
+        idx >= 0
+          ? state.insights.map((i) => (i.id === action.insight.id ? action.insight : i))
+          : [action.insight, ...state.insights];
+      return { ...state, insights };
+    }
+    case "insight.delete":
+      return { ...state, insights: state.insights.filter((i) => i.id !== action.id) };
+
+    case "reading.upsert": {
+      const idx = state.readingList.findIndex((r) => r.id === action.reading.id);
+      const readingList =
+        idx >= 0
+          ? state.readingList.map((r) => (r.id === action.reading.id ? action.reading : r))
+          : [action.reading, ...state.readingList];
+      return { ...state, readingList };
+    }
+    case "reading.delete":
+      return { ...state, readingList: state.readingList.filter((r) => r.id !== action.id) };
+
+    case "aboutPrinciple.upsert": {
+      const idx = state.aboutPrinciples.findIndex((p) => p.id === action.principle.id);
+      const aboutPrinciples =
+        idx >= 0
+          ? state.aboutPrinciples.map((p) => (p.id === action.principle.id ? action.principle : p))
+          : [action.principle, ...state.aboutPrinciples];
+      return { ...state, aboutPrinciples };
+    }
+    case "aboutPrinciple.delete":
+      return { ...state, aboutPrinciples: state.aboutPrinciples.filter((p) => p.id !== action.id) };
+
+    case "aboutTimeline.upsert": {
+      const idx = state.aboutTimeline.findIndex((t) => t.id === action.item.id);
+      const aboutTimeline =
+        idx >= 0
+          ? state.aboutTimeline.map((t) => (t.id === action.item.id ? action.item : t))
+          : [action.item, ...state.aboutTimeline];
+      return { ...state, aboutTimeline };
+    }
+    case "aboutTimeline.delete":
+      return { ...state, aboutTimeline: state.aboutTimeline.filter((t) => t.id !== action.id) };
 
     default:
       return state;
