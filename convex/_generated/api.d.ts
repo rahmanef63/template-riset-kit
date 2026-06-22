@@ -9,6 +9,7 @@
  */
 
 import type * as _shared_auth from "../_shared/auth.js";
+import type * as _shared_rateLimit from "../_shared/rateLimit.js";
 import type * as aboutPrinciples from "../aboutPrinciples.js";
 import type * as aboutTimeline from "../aboutTimeline.js";
 import type * as adminPanel_aiConfig from "../adminPanel_aiConfig.js";
@@ -57,6 +58,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   "_shared/auth": typeof _shared_auth;
+  "_shared/rateLimit": typeof _shared_rateLimit;
   aboutPrinciples: typeof aboutPrinciples;
   aboutTimeline: typeof aboutTimeline;
   adminPanel_aiConfig: typeof adminPanel_aiConfig;
