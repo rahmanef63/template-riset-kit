@@ -34,12 +34,12 @@ export const RESEARCH_STATS: StatItem[] = [
 ];
 
 export const RESEARCH_CLIENTS = [
-  "Universitas Lorem",
-  "Institut Ipsum",
+  "Universitas Garuda Nusantara",
+  "Institut Sains Nusantara",
   "Pusat Studi Kebijakan",
   "Lembaga Data Nasional",
   "Lab Sains Sosial",
-  "Konsorsium Riset Dolor",
+  "Konsorsium Riset Maritim",
 ];
 
 export const RESEARCH_FAQS: FaqItem[] = [
@@ -80,8 +80,8 @@ export const RESEARCH_TIERS: PricingTier[] = [
 
 export const RESEARCH_TESTIMONIALS: TestimonialItem[] = [
   { quote: "Matrix lit review-nya memangkas waktu sintesis saya dari dua minggu jadi dua hari. Gap antar paper langsung kelihatan.", author: "Dr. Ratna Dewi", role: "Peneliti senior · Pusat Studi Kebijakan" },
-  { quote: "Jarang ada workspace riset yang paham konteks akademik Indonesia — sitasi rapi, istilah EYD konsisten, dataset terdokumentasi.", author: "Prof. Bambang Wirawan", role: "Pembimbing disertasi · Universitas Lorem" },
-  { quote: "Kolaborasi lintas kota jadi ringan: satu sumber dokumen, satu daftar sitasi, dan semua kolaborator melihat versi yang sama.", author: "Anisa Putri, M.Sc.", role: "Kandidat doktor · Institut Ipsum" },
+  { quote: "Jarang ada workspace riset yang paham konteks akademik Indonesia — sitasi rapi, istilah EYD konsisten, dataset terdokumentasi.", author: "Prof. Bambang Wirawan", role: "Pembimbing disertasi · Universitas Garuda Nusantara" },
+  { quote: "Kolaborasi lintas kota jadi ringan: satu sumber dokumen, satu daftar sitasi, dan semua kolaborator melihat versi yang sama.", author: "Anisa Putri, M.Sc.", role: "Kandidat doktor · Institut Sains Nusantara" },
   { quote: "Data agreement-nya jelas dan prosesnya cepat. Replikasi studi kami jalan tanpa bolak-balik email berminggu-minggu.", author: "Farhan Hidayat", role: "Research associate · Lembaga Data Nasional" },
 ];
 
