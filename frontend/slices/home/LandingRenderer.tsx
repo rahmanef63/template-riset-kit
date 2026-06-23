@@ -72,6 +72,7 @@ export function renderLanding(section: LandingSection, deps: Deps) {
             </div>
           )}
           <HeroBlock
+            align={cfgString(cfg, "align") === "center" ? "center" : "left"}
             glow={Boolean(section.imageUrl)}
             badge={parseConfigBadge(section.config) ?? "Untuk peneliti, mahasiswa S2/S3, think-tank"}
             title={section.title}
