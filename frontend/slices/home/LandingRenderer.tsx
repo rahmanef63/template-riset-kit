@@ -20,6 +20,8 @@ import {
   PricingSection,
   StatsSection,
   TestimonialsSection,
+  cfgString,
+  parseConfigObject,
 } from "@/features/_shared/landing/sections";
 import type { LandingSection } from "@/features/_shared/landing/types";
 import { ADMIN_BASE, PUBLIC_BASE } from "@/features/_app/nav-config";
@@ -56,7 +58,8 @@ const FEATURE_ITEMS: FeatureItem[] = [
  */
 export function renderLanding(section: LandingSection, deps: Deps) {
   switch (section.kind) {
-    case "hero":
+    case "hero": {
+      const cfg = parseConfigObject(section.config);
       return (
         <LandingSectionShell section={section}>
           {/* Admin-composed background layers (images + HTML/CSS, each with
@@ -81,14 +84,21 @@ export function renderLanding(section: LandingSection, deps: Deps) {
             badge={parseConfigBadge(section.config) ?? "Untuk peneliti, mahasiswa S2/S3, think-tank"}
             title={section.title}
             subtitle={section.subtitle}
-            primaryCta={{ label: "Buka workspace", href: ADMIN_BASE }}
-            secondaryCta={{ label: "Lihat library publik", href: `${PUBLIC_BASE}/library` }}
+            primaryCta={{
+              label: cfgString(cfg, "ctaPrimaryLabel") ?? "Buka workspace",
+              href: cfgString(cfg, "ctaPrimaryHref") ?? ADMIN_BASE,
+            }}
+            secondaryCta={{
+              label: cfgString(cfg, "ctaSecondaryLabel") ?? "Lihat library publik",
+              href: cfgString(cfg, "ctaSecondaryHref") ?? `${PUBLIC_BASE}/library`,
+            }}
             image={section.imageUrl ? { url: section.imageUrl, ratio: section.imageRatio } : undefined}
           />
           {/* Foreground layers — above content, click-through. */}
           <HeroLayers placement="foreground" layers={section.layers} />
         </LandingSectionShell>
       );
+    }
 
     case "stats":
       return (
