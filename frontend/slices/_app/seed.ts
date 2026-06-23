@@ -13,12 +13,12 @@ const day = (n: number) => now - n * 24 * 60 * 60 * 1000;
 export const SEED_DOCUMENTS: Document[] = [
   {
     id: "doc-1",
-    title: "Lorem ipsum: A meta-analysis of cognitive load patterns",
+    title: "Beban kognitif dan friksi onboarding: meta-analisis lintas demografi",
     authors: "Pratama A., Sari R., Wijaya B.",
     year: 2024,
     fileLabel: "PDF · 24 hal",
     abstract:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Studi meta-analisis terhadap 42 paper menunjukkan pola beban kognitif konsisten lintas demografi.",
+      "Studi meta-analisis terhadap 42 paper primer menunjukkan pola beban kognitif yang konsisten lintas demografi, dengan friksi onboarding sebagai prediktor terkuat ketidakberhasilan adopsi.",
     tag: "cognitive-science",
     status: "indexed",
     uploadedAt: day(2),
@@ -27,7 +27,7 @@ export const SEED_DOCUMENTS: Document[] = [
   },
   {
     id: "doc-2",
-    title: "Ipsum doloremque: Riset etnografi UMKM Indonesia",
+    title: "Etnografi adopsi digital UMKM kuliner Indonesia",
     authors: "Hartono L., Setiawan B.",
     year: 2023,
     fileLabel: "PDF · 38 hal",
@@ -41,7 +41,7 @@ export const SEED_DOCUMENTS: Document[] = [
   },
   {
     id: "doc-3",
-    title: "Sit amet: Tinjauan kebijakan transportasi publik Jakarta",
+    title: "Tinjauan kebijakan transportasi publik Jakarta",
     authors: "Maharani P., Wijaya A.",
     year: 2025,
     fileLabel: "PDF · 16 hal",
@@ -88,7 +88,7 @@ export const SEED_CITATIONS: Citation[] = [
     docId: "doc-1",
     style: "APA",
     rendered:
-      "Pratama, A., Sari, R., & Wijaya, B. (2024). Lorem ipsum: A meta-analysis of cognitive load patterns. Journal of Cognitive Studies, 12(3), 88-104.",
+      "Pratama, A., Sari, R., & Wijaya, B. (2024). Beban kognitif dan friksi onboarding: meta-analisis lintas demografi. Journal of Cognitive Studies, 12(3), 88-104.",
     bibKey: "pratama2024",
     addedAt: day(2),
   },
@@ -97,7 +97,7 @@ export const SEED_CITATIONS: Citation[] = [
     docId: "doc-2",
     style: "BibTeX",
     rendered:
-      "@article{hartono2023, author={Hartono, L. and Setiawan, B.}, title={Ipsum doloremque: Riset etnografi UMKM Indonesia}, year={2023}, journal={Indonesian Ethnography Review}}",
+      "@article{hartono2023, author={Hartono, L. and Setiawan, B.}, title={Etnografi adopsi digital UMKM kuliner Indonesia}, year={2023}, journal={Indonesian Ethnography Review}}",
     bibKey: "hartono2023",
     addedAt: day(7),
   },
@@ -106,7 +106,7 @@ export const SEED_CITATIONS: Citation[] = [
     docId: "doc-3",
     style: "Chicago",
     rendered:
-      "Maharani, Putri, and Asep Wijaya. \"Sit amet: Tinjauan kebijakan transportasi publik Jakarta.\" Jakarta Policy Journal 8, no. 2 (2025): 14-29.",
+      "Maharani, Putri, and Asep Wijaya. \"Tinjauan kebijakan transportasi publik Jakarta.\" Jakarta Policy Journal 8, no. 2 (2025): 14-29.",
     bibKey: "maharani2025",
     addedAt: day(1),
   },

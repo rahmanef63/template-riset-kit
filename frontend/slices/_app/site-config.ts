@@ -27,9 +27,9 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   brandLetter: "R",
   brandName: "Riset Kit",
   tagline: "Workspace riset — baca PDF, review literatur, draft tesis dalam satu tempat.",
-  ownerName: "Lorem Peneliti",
+  ownerName: "Dr. Raka Mahendra",
   ownerRole: "principal investigator",
-  ownerInitials: "LP",
+  ownerInitials: "RM",
   description:
     "Riset Kit — workspace riset akademik & think-tank. Document QA, lit review matrix, citation manager, dan AI Reader yang paham EYD.",
   baseUrl: "https://riset.dev",

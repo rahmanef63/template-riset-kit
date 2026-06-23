@@ -1,13 +1,11 @@
 "use client";
 
-import { Bot, FileText, Library, Quote } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   HeroBlock,
   SectionHead,
   FeatureGrid,
   CtaBand,
-  type FeatureItem,
 } from "@/features/_shared";
 import { LandingSectionShell } from "@/features/_shared/landing/LandingSectionShell";
 import { HeroLayers } from "@/features/_shared/landing/HeroLayers";
@@ -35,6 +33,7 @@ import {
   RESEARCH_TESTIMONIALS,
   RESEARCH_TIERS,
 } from "./LandingExtras";
+import { FEATURE_ITEMS } from "./feature-config";
 import { HERO_IMG } from "./home-data";
 
 interface Deps {
@@ -42,13 +41,6 @@ interface Deps {
   litReviews: LitReview[];
   onSubscribe?: (email: string) => Promise<{ ok: boolean; notice?: string }>;
 }
-
-const FEATURE_ITEMS: FeatureItem[] = [
-  { icon: FileText, title: "Document Library", blurb: "Upload PDF/DOCX, OCR otomatis, indeks vektor untuk pencarian semantik." },
-  { icon: Bot, title: "AI Reader", blurb: "Chat dengan dokumen — tanya, parafrase, ringkas. Paham EYD bahasa Indonesia." },
-  { icon: Library, title: "Lit Review Matrix", blurb: "Bandingkan 10+ paper sekaligus: metode, temuan, gap penelitian." },
-  { icon: Quote, title: "Citation Manager", blurb: "APA, MLA, Chicago, IEEE, BibTeX. Auto-extract metadata dari PDF." },
-];
 
 /**
  * Maps each enabled landingSection.kind to its research renderer.

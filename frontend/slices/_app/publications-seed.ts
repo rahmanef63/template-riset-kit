@@ -8,7 +8,7 @@ export const SEED_PUBLICATIONS: Publication[] = [
   {
     id: "pub-1",
     slug: "cognitive-load-meta-analysis-2024",
-    title: "Lorem ipsum: A meta-analysis of cognitive load patterns",
+    title: "Beban kognitif dan friksi onboarding: meta-analisis lintas demografi",
     authors: "Pratama A., Sari R., Wijaya B.",
     year: 2024,
     venue: "Journal of Cognitive Studies",
@@ -24,7 +24,7 @@ export const SEED_PUBLICATIONS: Publication[] = [
   {
     id: "pub-2",
     slug: "etnografi-umkm-kuliner-bandung-2023",
-    title: "Ipsum doloremque: Riset etnografi UMKM kuliner Indonesia",
+    title: "Etnografi adopsi digital UMKM kuliner Indonesia",
     authors: "Hartono L., Setiawan B.",
     year: 2023,
     venue: "Indonesian Ethnography Review",
@@ -40,7 +40,7 @@ export const SEED_PUBLICATIONS: Publication[] = [
   {
     id: "pub-3",
     slug: "kebijakan-erp-jakarta-2025",
-    title: "Sit amet: Tinjauan kebijakan transportasi publik Jakarta",
+    title: "Tinjauan kebijakan transportasi publik Jakarta",
     authors: "Maharani P., Wijaya A.",
     year: 2025,
     venue: "Jakarta Policy Journal",
@@ -56,7 +56,7 @@ export const SEED_PUBLICATIONS: Publication[] = [
   {
     id: "pub-4",
     slug: "preprint-llm-akademik-id-2026",
-    title: "Consectetur: Evaluasi LLM untuk parafrase teks akademik bahasa Indonesia",
+    title: "Evaluasi LLM untuk parafrase teks akademik bahasa Indonesia",
     authors: "Nugroho D., Lestari M., Ramadhan F.",
     year: 2026,
     venue: "arXiv:2601.04421",
@@ -71,7 +71,7 @@ export const SEED_PUBLICATIONS: Publication[] = [
   {
     id: "pub-5",
     slug: "konferensi-icic-2024",
-    title: "Adipiscing elit: Sistem rekomendasi sitasi berbasis graph attention",
+    title: "Sistem rekomendasi sitasi berbasis graph attention",
     authors: "Wibowo H., Putri R.",
     year: 2024,
     venue: "Proc. ICIC 2024",
@@ -87,7 +87,7 @@ export const SEED_PUBLICATIONS: Publication[] = [
   {
     id: "pub-6",
     slug: "laporan-kebijakan-sains-id-2025",
-    title: "Eiusmod tempor: Pemetaan ekosistem riset terbuka di kampus Indonesia",
+    title: "Pemetaan ekosistem riset terbuka di kampus Indonesia",
     authors: "Tim Kebijakan Sains Terbuka",
     year: 2025,
     venue: "Riset Kit Policy Brief 03",

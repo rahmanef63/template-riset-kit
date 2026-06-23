@@ -21,69 +21,20 @@ import { SEED_PUBLICATIONS } from "@/features/_app/publications-seed";
 import { PUBLIC_BASE } from "@/features/_app/nav-config";
 import { usePublications } from "@/features/_app/store";
 import type { Document, Publication } from "@/features/_app/types";
+import { STATS, CLIENTS, FAQS, PRICING, TESTIMONIALS } from "@/convex/landingContent";
 
-/** Riset Kit default content for the shared landing sections — every
- *  value overridable per-section via the admin landing editor's config
- *  JSON (see _shared/landing/sections/config.ts for keys). */
+/** Riset Kit default landing content lives in convex/landingContent.ts — the
+ *  SINGLE source the seed also reads (it writes the same content into Convex
+ *  config). These re-exports are the render fallback before the seed runs;
+ *  edit the content in that module, not here. Every value stays overridable
+ *  per-section via the admin landing editor's config JSON (see
+ *  _shared/landing/sections/config.ts for keys). */
 
-export const RESEARCH_STATS: StatItem[] = [
-  { value: 24, suffix: "+", label: "Publikasi terindeks" },
-  { value: 480, suffix: "+", label: "Sitasi tercatat" },
-  { value: 12, label: "Dataset terbuka" },
-  { value: 18, label: "Kolaborator aktif" },
-];
-
-export const RESEARCH_CLIENTS = [
-  "Universitas Garuda Nusantara",
-  "Institut Sains Nusantara",
-  "Pusat Studi Kebijakan",
-  "Lembaga Data Nasional",
-  "Lab Sains Sosial",
-  "Konsorsium Riset Maritim",
-];
-
-export const RESEARCH_FAQS: FaqItem[] = [
-  { q: "Bagaimana cara mengakses dataset?", a: "Dataset berlisensi terbuka bisa diunduh langsung dari halaman Library. Untuk data sensitif, ajukan permintaan akses — kami balas maksimal 3 hari kerja dengan data agreement singkat." },
-  { q: "Bagaimana cara mensitasi publikasi di sini?", a: "Setiap publikasi punya halaman detail dengan sitasi siap salin dalam format APA, MLA, Chicago, IEEE, dan BibTeX — lengkap dengan DOI." },
-  { q: "Apakah terbuka untuk kolaborasi riset?", a: "Ya. Kami terbuka untuk ko-autor, replikasi studi, dan riset bersama lintas institusi. Sertakan proposal singkat (1 halaman) saat menghubungi kami lewat halaman About." },
-  { q: "Lisensi apa yang dipakai untuk data dan tulisan?", a: "Publikasi dan insight dirilis dengan CC BY 4.0 kecuali tertera lain. Dataset mengikuti lisensi sumber masing-masing — selalu tercantum di metadata. Atribusi wajib di kedua kasus." },
-  { q: "Bagaimana menghubungi tim riset?", a: "Lewat halaman About atau email di footer. Untuk pertanyaan metodologi, sebutkan judul publikasi atau dataset yang relevan supaya cepat kami arahkan ke peneliti yang tepat." },
-];
-
-export const RESEARCH_TIERS: PricingTier[] = [
-  {
-    name: "Akses Terbuka",
-    price: "Gratis",
-    blurb: "Untuk pembaca, mahasiswa, dan peneliti independen.",
-    features: ["Semua publikasi & insight", "Dataset berlisensi terbuka", "Sitasi siap salin (APA–BibTeX)"],
-    ctaLabel: "Jelajahi library",
-    ctaHref: `${PUBLIC_BASE}/library`,
-  },
-  {
-    name: "Kolaborasi Riset",
-    price: "Proposal",
-    blurb: "Riset bersama, ko-autor, dan replikasi studi.",
-    features: ["Akses dataset pra-rilis", "Sesi metodologi bersama tim", "Ko-autor dengan ORCID tercatat", "Prioritas review draft"],
-    featured: true,
-    ctaLabel: "Ajukan kolaborasi",
-    ctaHref: `${PUBLIC_BASE}/about`,
-  },
-  {
-    name: "Kemitraan Institusi",
-    price: "Penawaran khusus",
-    blurb: "Untuk universitas, lembaga, dan think-tank.",
-    features: ["Riset pesanan & policy brief", "Pelatihan metodologi untuk tim", "Akses penuh arsip dataset"],
-    ctaLabel: "Hubungi kami",
-    ctaHref: `${PUBLIC_BASE}/about`,
-  },
-];
-
-export const RESEARCH_TESTIMONIALS: TestimonialItem[] = [
-  { quote: "Matrix lit review-nya memangkas waktu sintesis saya dari dua minggu jadi dua hari. Gap antar paper langsung kelihatan.", author: "Dr. Ratna Dewi", role: "Peneliti senior · Pusat Studi Kebijakan" },
-  { quote: "Jarang ada workspace riset yang paham konteks akademik Indonesia — sitasi rapi, istilah EYD konsisten, dataset terdokumentasi.", author: "Prof. Bambang Wirawan", role: "Pembimbing disertasi · Universitas Garuda Nusantara" },
-  { quote: "Kolaborasi lintas kota jadi ringan: satu sumber dokumen, satu daftar sitasi, dan semua kolaborator melihat versi yang sama.", author: "Anisa Putri, M.Sc.", role: "Kandidat doktor · Institut Sains Nusantara" },
-  { quote: "Data agreement-nya jelas dan prosesnya cepat. Replikasi studi kami jalan tanpa bolak-balik email berminggu-minggu.", author: "Farhan Hidayat", role: "Research associate · Lembaga Data Nasional" },
-];
+export const RESEARCH_STATS: StatItem[] = STATS;
+export const RESEARCH_CLIENTS: string[] = CLIENTS;
+export const RESEARCH_FAQS: FaqItem[] = FAQS;
+export const RESEARCH_TIERS: PricingTier[] = PRICING;
+export const RESEARCH_TESTIMONIALS: TestimonialItem[] = TESTIMONIALS;
 
 const TYPE_LABEL: Record<Publication["type"], string> = {
   journal: "Jurnal",
