@@ -62,7 +62,7 @@ export function renderLanding(section: LandingSection, deps: Deps) {
           <HeroLayers
             placement="background"
             layers={section.layers}
-            fallbackImg={section.imageUrl ? undefined : HERO_IMG}
+            fallbackImg={section.imageUrl ? undefined : (section.bgImageUrl || HERO_IMG)}
           />
           {/* Readability scrim — opt-in via the `shade` toggle so the hero
               image shows in full real color by default. */}
